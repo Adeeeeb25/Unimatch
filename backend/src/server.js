@@ -46,7 +46,8 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(express.json({ limit: '100kb' }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Health check — reports DB connectivity
 let dbReady = false;
@@ -70,6 +71,9 @@ app.use('/api/domains', domainRoutes);
 
 // Global error handler
 app.use((err, req, res, _next) => {
+  if (err.type === 'entity.too.large' || err.status === 413) {
+    return res.status(413).json({ message: 'Uploaded image is too large. Please select an image under 5 MB.' });
+  }
   if (err.message?.startsWith('CORS:')) {
     return res.status(403).json({ message: err.message });
   }

@@ -21,11 +21,26 @@ const getMonogramPalette = (name = '') => {
   return MONOGRAM_PALETTES[index];
 };
 
+const formatYearBadge = (rawYear) => {
+  if (!rawYear) return '';
+  const str = String(rawYear).trim();
+  if (/^\d{4}$/.test(str)) return `'${str.slice(-2)}`;
+  if (/^'\d{2}$/.test(str)) return str;
+  const abbreviations = {
+    'First Year': '1st Yr',
+    'Second Year': '2nd Yr',
+    'Third Year': '3rd Yr',
+    'Fourth Year': '4th Yr',
+    'Postgraduate': 'Postgrad'
+  };
+  return abbreviations[str] || str;
+};
+
 const StudentProfileCard = ({ user, onConnect, isConnected = false }) => {
   const navigate = useNavigate();
   const profile = user.profile || {};
   const major = profile.major || 'Undeclared';
-  const year = profile.year ? `'${String(profile.year).slice(-2)}` : '';
+  const year = formatYearBadge(profile.year);
   const residence = profile.residence || '';
   const bio = profile.bio || '';
   const interests = Array.isArray(profile.interests) ? profile.interests : [];

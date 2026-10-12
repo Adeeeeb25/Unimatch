@@ -76,9 +76,23 @@ const ProfileViewPage = () => {
       return;
     }
 
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      showMessage('Only JPG, PNG, or WebP images are allowed.', 'error');
+      event.target.value = '';
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      showMessage('Image must be smaller than 5 MB.', 'error');
+      event.target.value = '';
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = () => {
       updateField('avatar', reader.result || '');
+      setMessage('');
     };
     reader.readAsDataURL(file);
   };
