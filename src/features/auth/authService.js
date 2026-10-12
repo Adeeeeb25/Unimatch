@@ -24,6 +24,13 @@ const handleResponse = async (response) => {
   return payload;
 };
 
+export const sendSignupOtp = (body) =>
+  fetch(buildUrl('/api/auth/send-otp'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }).then(handleResponse);
+
 export const signup = (body) =>
   fetch(buildUrl('/api/auth/signup'), {
     method: 'POST',

@@ -1,7 +1,8 @@
 import express from 'express';
-import { signup, login } from './authController.js';
+import { signup, login, sendSignupOtp } from './authController.js';
 
 const router = express.Router();
+router.post('/send-otp', sendSignupOtp);
 router.post('/signup', signup);
 router.post('/login', login);
 

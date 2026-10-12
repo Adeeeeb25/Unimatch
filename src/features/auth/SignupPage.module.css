@@ -239,6 +239,120 @@
   font-weight: 700;
 }
 
+/* 6-Digit OTP Specific Styling */
+.otpInput {
+  width: 100%;
+  padding: 0.85rem 1.25rem;
+  background: var(--light-lavender, #F1EAFE);
+  border: 2.5px solid var(--text-main, #282333);
+  border-radius: var(--radius-md, 8px);
+  box-shadow: 4px 4px 0px var(--text-main, #282333);
+  font-family: var(--font-editorial, 'Anton', monospace);
+  font-size: 2.2rem;
+  letter-spacing: 0.65rem;
+  text-align: center;
+  color: var(--deep-purple, #5B2BE0);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+  box-sizing: border-box;
+}
+
+.otpInput:focus {
+  outline: none;
+  background: #FFFFFF;
+  box-shadow: 6px 6px 0px var(--text-main, #282333);
+  transform: translateY(-2px);
+}
+
+.devHintBanner {
+  background: var(--accent-yellow-subtle, #FFFBEB);
+  border: 1.5px dashed var(--accent-yellow-dark, #8C6500);
+  border-radius: var(--radius-sm, 6px);
+  padding: 0.65rem 0.95rem;
+  font-size: 0.84rem;
+  color: #6E5200;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.devHintBanner code {
+  font-family: monospace;
+  font-weight: 800;
+  font-size: 1rem;
+  background: #FFFFFF;
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+  border: 1px solid rgba(140, 101, 0, 0.4);
+}
+
+.devFillBtn {
+  background: #FFFFFF;
+  border: 1.5px solid #8C6500;
+  border-radius: 4px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: #6E5200;
+  transition: all 0.15s ease;
+}
+
+.devFillBtn:hover {
+  background: #6E5200;
+  color: #FFFFFF;
+}
+
+.otpActionsRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  margin-top: 0.15rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.resendBtn {
+  background: none;
+  border: none;
+  color: var(--deep-purple, #5B2BE0);
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.84rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.resendBtn:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.resendBtn:disabled {
+  color: var(--text-muted, #8E8799);
+  cursor: not-allowed;
+}
+
+.backBtn {
+  background: none;
+  border: none;
+  color: var(--text-secondary, #746E7D);
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.backBtn:hover {
+  color: var(--text-main, #282333);
+  text-decoration: underline;
+}
+
 .footerNote {
   display: flex;
   flex-direction: column;

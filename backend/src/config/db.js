@@ -30,6 +30,7 @@ export const USERS_TABLE = 'unimatch_users';
 export const MESSAGES_TABLE = 'unimatch_messages';
 export const SUPPORT_TABLE = 'unimatch_support_requests';
 export const DOMAINS_TABLE = 'unimatch_campus_domains';
+export const OTP_TABLE = 'unimatch_email_otps';
 
 const createUsersTable = `
 CREATE TABLE IF NOT EXISTS ${USERS_TABLE} (
@@ -87,6 +88,18 @@ CREATE TABLE IF NOT EXISTS ${DOMAINS_TABLE} (
 );
 `;
 
+const createOtpTable = `
+CREATE TABLE IF NOT EXISTS ${OTP_TABLE} (
+  id BIGSERIAL PRIMARY KEY,
+  email TEXT NOT NULL,
+  otp_hash TEXT NOT NULL,
+  expires_at TIMESTAMPTZ NOT NULL,
+  attempts INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_unimatch_otps_email ON ${OTP_TABLE}(email);
+`;
+
 const connectDB = async () => {
   try {
     await pool.query('SELECT 1');
@@ -94,6 +107,7 @@ const connectDB = async () => {
     await pool.query(createMessagesTable);
     await pool.query(createSupportTable);
     await pool.query(createDomainsTable);
+    await pool.query(createOtpTable);
     console.log('PostgreSQL connected and schema ready');
   } catch (error) {
     console.error('PostgreSQL connection failed:', error.message);

@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import { createToken } from '../shared/tokenService.js';
 import { createUser, findUserByEmail } from '../user/userRepository.js';
+import { requestEmailOtp, verifyEmailOtp } from '../../services/otpService.js';
 
 // Allowed email domains — comma-separated list in env, e.g. "connect.cuchd.in,cuchd.in"
 // If not set, all email domains are accepted (development fallback).
@@ -22,12 +23,58 @@ const isEmailDomainAllowed = (email) => {
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/**
+ * Dispatch 6-digit verification code to university email
+ */
+export const sendSignupOtp = async (req, res) => {
+  try {
+    const { email } = req.body || {};
+    if (!email) {
+      return res.status(400).json({ message: 'University email address is required' });
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
+    if (!EMAIL_PATTERN.test(normalizedEmail)) {
+      return res.status(400).json({ message: 'Please provide a valid university email address' });
+    }
+
+    if (!isEmailDomainAllowed(normalizedEmail)) {
+      return res.status(403).json({
+        message: 'Registration is restricted to authorized university email domains (.edu, .cuchd.in).'
+      });
+    }
+
+    const existing = await findUserByEmail(normalizedEmail);
+    if (existing) {
+      return res.status(409).json({ message: 'An account with this email already exists' });
+    }
+
+    const result = await requestEmailOtp(normalizedEmail);
+
+    const isDevelopment = process.env.NODE_ENV !== 'production';
+    return res.json({
+      success: true,
+      message: `A 6-digit verification code has been sent to ${normalizedEmail}`,
+      email: normalizedEmail,
+      expiresInMinutes: 10,
+      ...(isDevelopment || result.emailResult?.simulated ? { previewOtp: result.otp } : {})
+    });
+  } catch (err) {
+    console.error('sendSignupOtp error:', err);
+    return res.status(500).json({ message: 'Unable to send verification code — please try again' });
+  }
+};
+
 export const signup = async (req, res) => {
   try {
-    const { email, password, name } = req.body;
+    const { email, password, name, otp } = req.body;
 
     if (!email || !password || !name) {
       return res.status(400).json({ message: 'Full name, email, and password are required' });
+    }
+
+    if (!otp) {
+      return res.status(400).json({ message: '6-digit email verification code is required' });
     }
 
     const trimmedName = name.trim();
@@ -53,6 +100,12 @@ export const signup = async (req, res) => {
     const existing = await findUserByEmail(normalizedEmail);
     if (existing) {
       return res.status(409).json({ message: 'An account with this email already exists' });
+    }
+
+    // Verify 6-digit OTP code
+    const otpCheck = await verifyEmailOtp(normalizedEmail, otp);
+    if (!otpCheck.valid) {
+      return res.status(400).json({ message: otpCheck.error || 'Invalid or expired verification code' });
     }
 
     const hashed = await bcrypt.hash(password, 12);
