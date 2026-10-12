@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support | UniMatch</title>
+  <link rel="stylesheet" href="../theme.css" />
+  <link rel="stylesheet" href="contact.css" />
+</head>
+<body>
+  <header>
+    <h1>Need support?</h1>
+    <p>We are here to help. Send us a note anytime and we will respond within one business day.</p>
+  </header>
+
+  <main class="contact-container">
+    <form class="contact-form" onsubmit="submitForm(event)">
+      <label for="name">Your Name</label>
+      <input type="text" id="name" required />
+
+      <label for="email">Your Email</label>
+      <input type="email" id="email" required />
+
+      <label for="message">Message</label>
+      <textarea id="message" rows="6" required></textarea>
+
+      <button type="submit">Send Message</button>
+    </form>
+
+    <div class="contact-info">
+      <h2>Other Ways to Reach Us</h2>
+      <p>Email: <a href="mailto:support@unimatch.com">support@unimatch.com</a></p>
+      <p>Instagram: <a href="#">@unimatch.app</a></p>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 UniMatch. All rights reserved.</p>
+  </footer>
+
+  <script>
+    function submitForm(e) {
+      e.preventDefault();
+      alert("Thanks! We'll get back to you soon.");
+    }
+  </script>
+</body>
+</html>

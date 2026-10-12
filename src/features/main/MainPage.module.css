@@ -1,0 +1,457 @@
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.25rem 4vw 4.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.25rem;
+}
+
+/* Loading State */
+.loadingWrapper {
+  min-height: 55vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+}
+
+.loadingSpinner {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3.5px solid var(--lavender-subtle, #F0EBFF);
+  border-top-color: var(--deep-purple, #5B2BE0);
+  animation: spin 0.75s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingText {
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-weight: 600;
+  color: var(--text-secondary, #777184);
+  font-size: 0.95rem;
+}
+
+/* Welcome Banner */
+.welcomeBanner {
+  background: var(--lavender-wash, #F8F4FF);
+  border-radius: var(--radius-xl, 14px);
+  border: 1px solid rgba(168, 139, 254, 0.28);
+  padding: 2.25rem 2.5rem;
+  box-shadow: var(--shadow-sm, 0 1px 3px rgba(39, 34, 56, 0.05));
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.welcomeInner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.welcomeCopy {
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.campusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: var(--surface-card, #FFFFFF);
+  border: 1px solid var(--border-soft, rgba(168, 139, 254, 0.3));
+  border-radius: var(--radius-sm, 6px);
+  padding: 0.3rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--deep-purple, #5B2BE0);
+  align-self: flex-start;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.campusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--color-success, #10B981);
+}
+
+.dividerDot {
+  color: var(--text-muted, #9E98AD);
+}
+
+.welcomeTitle {
+  font-size: clamp(1.85rem, 3.2vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-main, #272238);
+  line-height: 1.15;
+  margin: 0;
+}
+
+.welcomeLead {
+  font-size: 1.02rem;
+  color: var(--text-secondary, #777184);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.bannerActions {
+  display: flex;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* Nudge Banner */
+.nudgeBanner {
+  background: var(--accent-yellow-subtle, #FFFBEB);
+  border: 1px solid var(--accent-yellow, #FFE49A);
+  border-radius: var(--radius-md, 8px);
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.nudgeText {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #6E5200;
+}
+
+.nudgeSpark {
+  color: #6E5200;
+  flex-shrink: 0;
+}
+
+/* Discovery Controls Section */
+.controlsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.tabBar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tabBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: var(--surface-card, #FFFFFF);
+  border: 1px solid var(--border-subtle, #EDE8F7);
+  border-radius: var(--radius-md, 8px);
+  padding: 0.55rem 1.1rem;
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-secondary, #777184);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.tabBtn:hover {
+  border-color: var(--primary-lavender, #A88BFE);
+  color: var(--deep-purple, #5B2BE0);
+  background: var(--lavender-wash, #F8F4FF);
+}
+
+.tabBtn.activeTab {
+  background: var(--deep-purple, #5B2BE0);
+  color: #FFFFFF;
+  border-color: var(--deep-purple, #5B2BE0);
+  box-shadow: 0 2px 8px rgba(91, 43, 224, 0.25);
+}
+
+.tabIcon {
+  flex-shrink: 0;
+}
+
+.searchFilterRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.85rem;
+}
+
+.searchBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 1.1rem;
+  color: var(--text-muted, #9E98AD);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.85rem 2.8rem 0.85rem 3rem;
+  background: var(--surface-card, #FFFFFF);
+  border: 1px solid var(--border-subtle, #EDE8F7);
+  border-radius: var(--radius-md, 8px);
+  font-size: 0.95rem;
+  color: var(--text-main, #272238);
+  box-shadow: 0 1px 3px rgba(39, 34, 56, 0.03);
+  transition: all 0.15s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--deep-purple, #5B2BE0);
+  box-shadow: 0 0 0 3px rgba(91, 43, 224, 0.15);
+}
+
+.clearBtn {
+  position: absolute;
+  right: 0.85rem;
+  background: none;
+  border: none;
+  color: var(--text-muted, #9E98AD);
+  cursor: pointer;
+  padding: 0.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm, 6px);
+}
+
+.clearBtn:hover {
+  color: var(--text-main, #272238);
+}
+
+.deptSelectWrap {
+  min-width: 200px;
+}
+
+.deptSelect {
+  width: 100%;
+  height: 100%;
+  padding: 0.85rem 1.25rem;
+  background: var(--surface-card, #FFFFFF);
+  border: 1px solid var(--border-subtle, #EDE8F7);
+  border-radius: var(--radius-md, 8px);
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--text-main, #272238);
+  box-shadow: 0 1px 3px rgba(39, 34, 56, 0.03);
+  cursor: pointer;
+}
+
+.deptSelect:focus {
+  outline: none;
+  border-color: var(--deep-purple, #5B2BE0);
+  box-shadow: 0 0 0 3px rgba(91, 43, 224, 0.15);
+}
+
+/* Discovery Header & Grid */
+.discoverySection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.discoveryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.discoveryTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sectionHeading {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--text-main, #272238);
+}
+
+.countPill {
+  background: var(--lavender-subtle, #F0EBFF);
+  color: var(--deep-purple, #5B2BE0);
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-sm, 6px);
+  border: 1px solid rgba(168, 139, 254, 0.3);
+}
+
+.resetFiltersBtn {
+  background: none;
+  border: none;
+  color: var(--deep-purple, #5B2BE0);
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.profileGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 1.75rem;
+}
+
+/* Empty State Card */
+.emptyCard {
+  background: var(--surface-card, #FFFFFF);
+  border-radius: var(--radius-xl, 14px);
+  border: 1.5px dashed var(--primary-lavender, #A88BFE);
+  padding: 3.5rem 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  max-width: 520px;
+  margin: 1.5rem auto;
+}
+
+.emptyIconWrap {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md, 8px);
+  background: var(--lavender-wash, #F8F4FF);
+  color: var(--deep-purple, #5B2BE0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emptyTitle {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-main, #272238);
+}
+
+.emptyLead {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--text-secondary, #777184);
+  line-height: 1.55;
+}
+
+/* Spotlight Banner (Study Spaces) */
+.spotlightBanner {
+  background: var(--lavender-subtle, #F0EBFF);
+  border-radius: var(--radius-xl, 14px);
+  border: 1px solid rgba(168, 139, 254, 0.4);
+  padding: 1.85rem 2.25rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.spotlightVisual {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md, 8px);
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(91, 43, 224, 0.08);
+  flex-shrink: 0;
+}
+
+.spotlightIcon {
+  color: var(--deep-purple, #5B2BE0);
+}
+
+.spotlightContent {
+  flex: 1;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.spotlightEyebrow {
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--deep-purple, #5B2BE0);
+}
+
+.spotlightContent h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-main, #272238);
+}
+
+.spotlightContent p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-secondary, #777184);
+  line-height: 1.5;
+}
+
+.spotlightAction {
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 1.5rem 4vw 3.5rem;
+    gap: 1.75rem;
+  }
+
+  .welcomeBanner {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .searchFilterRow {
+    grid-template-columns: 1fr;
+  }
+
+  .profileGrid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .spotlightBanner {
+    padding: 1.5rem;
+  }
+}

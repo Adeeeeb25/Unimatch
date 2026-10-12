@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="18" fill="#5B2BE0"/>
+  <!-- Two intersecting loops forming an infinity/connection spark -->
+  <path d="M22 24C16.4772 24 12 28.4772 12 34C12 39.5228 16.4772 44 22 44C27.5228 44 32 38 32 32C32 26 36.4772 20 42 20C47.5228 20 52 24.4772 52 30C52 35.5228 47.5228 40 42 40" stroke="#FFFCF8" stroke-width="5.5" stroke-linecap="round"/>
+  <!-- Playful social accent dot / spark -->
+  <circle cx="45" cy="18" r="4.5" fill="#FFE49A"/>
+  <circle cx="19" cy="46" r="3.5" fill="#F6B8D0"/>
+</svg>

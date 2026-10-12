@@ -1,0 +1,138 @@
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3rem 4vw 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3.5rem;
+}
+
+.hero {
+  max-width: 740px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.eyebrow {
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--deep-purple, #5B2BE0);
+}
+
+.hero h1 {
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-main, #272238);
+  margin: 0;
+  line-height: 1.15;
+}
+
+.lead {
+  font-size: 1.1rem;
+  color: var(--text-secondary, #777184);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.storyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.75rem;
+}
+
+.storyCard {
+  border-radius: var(--radius-xl, 14px);
+  padding: 2.25rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  border: 1px solid;
+  transition: transform 0.2s ease;
+}
+
+.storyCard:hover {
+  transform: translateY(-3px);
+}
+
+.cardSpark {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md, 8px);
+  background: #FFFFFF;
+  color: var(--deep-purple, #5B2BE0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.storyCard h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-main, #272238);
+}
+
+.storyCard p {
+  margin: 0;
+  font-size: 0.94rem;
+  line-height: 1.6;
+  color: var(--text-secondary, #777184);
+}
+
+.cardLavender {
+  background: var(--lavender-subtle, #F0EBFF);
+  border-color: rgba(168, 139, 254, 0.4);
+}
+
+.cardPink {
+  background: var(--accent-pink-subtle, #FDF2F7);
+  border-color: rgba(246, 184, 208, 0.5);
+}
+
+.cardYellow {
+  background: var(--accent-yellow-subtle, #FFFBEB);
+  border-color: rgba(255, 228, 154, 0.5);
+}
+
+.cardMint {
+  background: #EDFAF6;
+  border-color: rgba(163, 228, 215, 0.6);
+}
+
+.communityCallout {
+  background: #FFFFFF;
+  border-radius: var(--radius-xl, 14px);
+  border: 1px solid var(--border-subtle, #EDE8F7);
+  padding: 2.5rem;
+  box-shadow: var(--shadow-card, 0 4px 16px rgba(91, 43, 224, 0.05));
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.calloutCopy h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-main, #272238);
+}
+
+.calloutCopy p {
+  margin: 0.35rem 0 0;
+  font-size: 0.95rem;
+  color: var(--text-secondary, #777184);
+}
+
+.calloutActions {
+  display: flex;
+  gap: 0.85rem;
+  flex-shrink: 0;
+}

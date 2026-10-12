@@ -1,0 +1,282 @@
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.25rem 4vw 4.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.header {
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.eyebrow {
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--deep-purple, #5B2BE0);
+}
+
+.header h1 {
+  font-size: 2.1rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-main, #272238);
+  margin: 0;
+}
+
+.lead {
+  font-size: 1.02rem;
+  color: var(--text-secondary, #777184);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(340px, 1.25fr);
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+/* Map Panel (Left) */
+.mapPanel {
+  background: var(--surface-card, #FFFFFF);
+  border-radius: var(--radius-xl, 14px);
+  border: 1px solid var(--border-subtle, #EDE8F7);
+  box-shadow: var(--shadow-card, 0 4px 16px rgba(91, 43, 224, 0.05));
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+  position: sticky;
+  top: 90px;
+}
+
+.mapShell {
+  min-height: 200px;
+  border-radius: var(--radius-md, 8px);
+  background: #1E1B2E;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle, #EDE8F7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.mapPinIcon {
+  color: var(--accent-yellow, #FFE49A);
+  margin-bottom: 0.75rem;
+}
+
+.centerText {
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.location {
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.coords {
+  font-size: 0.8rem;
+  color: var(--lavender-subtle, #F0EBFF);
+}
+
+.configNotice {
+  display: inline-block;
+  margin-top: 0.65rem;
+  font-size: 0.76rem;
+  color: var(--accent-yellow, #FFE49A);
+  background: rgba(255, 228, 154, 0.15);
+  border: 1px solid rgba(255, 228, 154, 0.35);
+  padding: 0.35rem 0.65rem;
+  border-radius: var(--radius-sm, 6px);
+}
+
+.configNotice code {
+  color: #FFFFFF;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+}
+
+.mapSummary {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.summaryTitle {
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--deep-purple, #5B2BE0);
+}
+
+.summaryDetail {
+  margin: 0;
+  font-size: 0.94rem;
+  color: var(--text-secondary, #777184);
+  line-height: 1.55;
+}
+
+.amenitiesSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.amenityLabel {
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted, #9E98AD);
+}
+
+.highlights {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.highlights li {
+  background: var(--lavender-subtle, #F0EBFF);
+  border: 1px solid rgba(168, 139, 254, 0.3);
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-sm, 6px);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--deep-purple, #5B2BE0);
+}
+
+.mapButton {
+  align-self: flex-start;
+  margin-top: 0.25rem;
+}
+
+/* Spot List (Right) */
+.spotPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.filterBar {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.filterChip {
+  padding: 0.45rem 0.95rem;
+  border-radius: var(--radius-md, 8px);
+  border: 1px solid var(--border-subtle, #EDE8F7);
+  background: var(--surface-card, #FFFFFF);
+  color: var(--text-secondary, #777184);
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.filterChip:hover {
+  border-color: var(--primary-lavender, #A88BFE);
+  color: var(--deep-purple, #5B2BE0);
+}
+
+.filterChip.active {
+  background: var(--deep-purple, #5B2BE0);
+  border-color: var(--deep-purple, #5B2BE0);
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(91, 43, 224, 0.25);
+}
+
+.spotList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.spotCard {
+  background: var(--surface-card, #FFFFFF);
+  border-radius: var(--radius-lg, 12px);
+  border: 1.5px solid var(--border-subtle, #EDE8F7);
+  padding: 1.25rem 1.45rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.spotCard:hover {
+  transform: translateY(-2px);
+  border-color: var(--primary-lavender, #A88BFE);
+  box-shadow: var(--shadow-card, 0 4px 16px rgba(91, 43, 224, 0.05));
+}
+
+.spotCard.selected {
+  border-color: var(--deep-purple, #5B2BE0);
+  background: var(--lavender-wash, #F8F4FF);
+  box-shadow: 0 0 0 1px var(--deep-purple, #5B2BE0);
+}
+
+.spotCard h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-main, #272238);
+}
+
+.spotLocation {
+  margin: 0.25rem 0 0;
+  font-size: 0.84rem;
+  color: var(--text-secondary, #777184);
+}
+
+.badge {
+  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-sm, 6px);
+  background: var(--lavender-subtle, #F0EBFF);
+  border: 1px solid rgba(168, 139, 254, 0.35);
+  color: var(--deep-purple, #5B2BE0);
+  white-space: nowrap;
+}
+
+@media (max-width: 860px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mapPanel {
+    position: static;
+  }
+}
