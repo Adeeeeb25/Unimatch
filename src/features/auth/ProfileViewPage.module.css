@@ -52,15 +52,17 @@
 }
 
 .header h1 {
-  font-size: 2.1rem;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: var(--text-main, #272238);
+  font-family: var(--font-editorial, 'Anton', Impact, sans-serif);
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  color: var(--text-main, #282333);
   margin: 0;
 }
 
 .lead {
-  font-size: 0.95rem;
+  font-size: 0.98rem;
   color: var(--text-secondary, #777184);
   margin: 0.35rem 0 0;
   max-width: 600px;
@@ -82,8 +84,8 @@
 .formCard {
   background: var(--surface-card, #FFFFFF);
   border-radius: var(--radius-xl, 14px);
-  border: 1px solid var(--border-subtle, #EDE8F7);
-  box-shadow: 0 4px 16px rgba(91, 43, 224, 0.04);
+  border: 2px solid var(--text-main, #282333);
+  box-shadow: 6px 6px 0px var(--text-main, #282333);
   padding: 2.25rem;
   display: flex;
   flex-direction: column;

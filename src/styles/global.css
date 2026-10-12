@@ -4,9 +4,10 @@
      Solid colors, deliberate contrast, restrained component radii
      ======================================================== */
 
-  /* Solid Brand Palette (No gradients) */
+  /* Solid Editorial Brand Palette (No gradients) */
+  --brand-lavender: #A88BFE;
   --primary-lavender: #A88BFE;
-  --light-lavender: #BFA2FF;
+  --light-lavender: #F1EAFE;
   --lavender-subtle: #F0EBFF;
   --lavender-wash: #F8F4FF;
   --deep-purple: #5B2BE0;
@@ -14,26 +15,29 @@
   --deep-purple-active: #3C16A5;
 
   /* Backgrounds & Canvas (Solid) */
-  --bg-lavender: #F5F0FF;
   --bg-warm: #FFFCF8;
+  --bg-lavender: #F5F0FF;
   --surface-card: #FFFFFF;
   --surface-warm: #FAF7F2;
 
   /* Typography Colors */
-  --text-main: #272238;
-  --text-secondary: #5C556E;
-  --text-muted: #888099;
+  --text-main: #282333;
+  --text-secondary: #746E7D;
+  --text-muted: #8E8799;
   --text-inverse: #FFFFFF;
 
-  /* Restrained Functional Accents (Solid) */
-  --accent-pink: #F6B8D0;
-  --accent-pink-subtle: #FDF2F7;
-  --accent-pink-dark: #A3335A;
+  /* Distinctive Editorial Accent Tokens */
+  --accent-coral: #F4845F;
+  --accent-coral-subtle: #FEF0EA;
   --accent-yellow: #FFE49A;
   --accent-yellow-subtle: #FFFBEB;
   --accent-yellow-dark: #8C6500;
+  --accent-pink: #F6B8D0;
+  --accent-pink-subtle: #FDF2F7;
+  --accent-pink-dark: #A3335A;
   --accent-mint: #BCEFE0;
   --accent-mint-dark: #1E7B62;
+  --white: #FFFFFF;
 
   /* Status Colors */
   --color-success: #059669;
@@ -50,9 +54,9 @@
   --border-focus: #5B2BE0;
 
   /* Restrained Flat & Soft Shadows */
-  --shadow-sm: 0 1px 2px rgba(39, 34, 56, 0.04);
-  --shadow-card: 0 2px 8px rgba(39, 34, 56, 0.05);
-  --shadow-card-hover: 0 4px 12px rgba(39, 34, 56, 0.08);
+  --shadow-sm: 0 1px 2px rgba(40, 35, 51, 0.04);
+  --shadow-card: 0 2px 8px rgba(40, 35, 51, 0.05);
+  --shadow-card-hover: 0 4px 12px rgba(40, 35, 51, 0.08);
 
   /* Restrained Radius Scale: Strict Rule (6px - 14px, rectangular corners) */
   --radius-xs: 4px;
@@ -63,6 +67,7 @@
   --radius-circle: 50%;
 
   /* Fonts */
+  --font-editorial: 'Anton', Impact, 'Plus Jakarta Sans', sans-serif;
   --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 

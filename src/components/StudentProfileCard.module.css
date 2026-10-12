@@ -1,21 +1,21 @@
 .card {
   background: var(--surface-card, #FFFFFF);
-  border-radius: var(--radius-xl, 24px);
-  border: 1px solid var(--border-subtle, #EDE8F7);
-  box-shadow: var(--shadow-card, 0 4px 16px rgba(91, 43, 224, 0.05));
+  border-radius: var(--radius-lg, 12px);
+  border: 2px solid var(--text-main, #282333);
+  box-shadow: 4px 4px 0px var(--text-main, #282333);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   cursor: pointer;
   position: relative;
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease, border-color 0.22s ease;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
   user-select: none;
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-card-hover, 0 14px 30px rgba(91, 43, 224, 0.12));
-  border-color: var(--primary-lavender, #A88BFE);
+  transform: translateY(-4px);
+  box-shadow: 6px 6px 0px var(--text-main, #282333);
+  border-color: var(--text-main, #282333);
 }
 
 .card:focus-visible {

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
 import BrandLogo from '../../components/BrandLogo';
 import Button from '../../components/Button';
 import styles from './SignupPage.module.css';
@@ -80,144 +80,182 @@ const SignupPage = () => {
 
   return (
     <section className={styles.page}>
-      <div className={styles.authCard}>
-        <div className={styles.logoWrap}>
-          <BrandLogo size="medium" />
-        </div>
-
-        <div className={styles.header}>
-          <h1>Join your campus</h1>
-          <p className={styles.lead}>
-            Create your student account to discover classmates, study partners, and campus events.
-          </p>
-        </div>
-
-        <form className={styles.form} onSubmit={handleSignup}>
-          <div className={styles.fieldGroup}>
-            <label htmlFor="fullname" className={styles.label}>
-              Full Name
-            </label>
-            <input
-              id="fullname"
-              className={styles.input}
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="e.g. Maya Patel"
-              type="text"
-              required
-            />
+      <div className={styles.splitWrapper}>
+        {/* Left Side: Restrained Branded Editorial Panel */}
+        <aside className={styles.brandSidePanel}>
+          <div className={styles.brandSideTop}>
+            <BrandLogo size="medium" />
+            <span className={styles.brandSideBadge}>New Student</span>
           </div>
 
-          <div className={styles.fieldGroup}>
-            <label htmlFor="campusDomain" className={styles.label}>
-              Campus Institution
-            </label>
-            <select
-              id="campusDomain"
-              className={styles.select}
-              value={selectedDomainOption}
-              onChange={(e) => setSelectedDomainOption(e.target.value)}
-            >
-              {commonDomains.map((d) => (
-                <option key={d.domain} value={d.domain}>
-                  {d.label}
-                </option>
-              ))}
-            </select>
+          <div className={styles.brandStatementBlock}>
+            <span className={styles.brandOverline}>Campus Network</span>
+            <h2 className={styles.brandHeadline}>
+              BUILD YOUR CAMPUS CREW.
+            </h2>
+            <p className={styles.brandLead}>
+              Join your university network to discover project partners, share syllabus notes, and build genuine friendships.
+            </p>
           </div>
 
-          {selectedDomainOption === 'custom' && (
+          <div className={styles.perksList}>
+            <div className={styles.perkItem}>
+              <CheckCircle2 size={16} className={styles.perkIcon} />
+              <span>Campus exclusivity via institutional email check</span>
+            </div>
+            <div className={styles.perkItem}>
+              <CheckCircle2 size={16} className={styles.perkIcon} />
+              <span>Course overlap and shared interest recommendations</span>
+            </div>
+            <div className={styles.perkItem}>
+              <CheckCircle2 size={16} className={styles.perkIcon} />
+              <span>Zero advertisements, zero data brokering, student privacy first</span>
+            </div>
+          </div>
+        </aside>
+
+        {/* Right Side: Form Card */}
+        <main className={styles.authCard}>
+          <div className={styles.header}>
+            <span className={styles.formEyebrow}>GET STARTED</span>
+            <h1>Create your student profile</h1>
+            <p className={styles.lead}>
+              Register with your authorized university email to join your campus directory.
+            </p>
+          </div>
+
+          <form className={styles.form} onSubmit={handleSignup}>
             <div className={styles.fieldGroup}>
-              <label htmlFor="customDomain" className={styles.label}>
-                Campus Domain Name
+              <label htmlFor="fullname" className={styles.label}>
+                Full Name
               </label>
               <input
-                id="customDomain"
+                id="fullname"
                 className={styles.input}
-                value={customDomainName}
-                onChange={(e) => setCustomDomainName(e.target.value)}
-                placeholder="e.g. students.harvard.edu"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="e.g. Maya Patel"
                 type="text"
                 required
               />
             </div>
-          )}
 
-          <div className={styles.fieldGroup}>
-            <label htmlFor="email" className={styles.label}>
-              University Email Address
-            </label>
-            <input
-              id="email"
-              className={styles.input}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={
-                selectedDomainOption === 'cuchd.in'
-                  ? 'username@cuchd.in'
-                  : selectedDomainOption === 'custom'
-                  ? 'student.username'
-                  : 'username@university.edu'
-              }
-              type="email"
-              required
-            />
-          </div>
-
-          <div className={styles.fieldGroup}>
-            <div className={styles.labelRow}>
-              <label htmlFor="password" className={styles.label}>
-                Password <span className={styles.labelHint}>(min 8 characters)</span>
+            <div className={styles.fieldGroup}>
+              <label htmlFor="campusDomain" className={styles.label}>
+                Campus Institution
               </label>
-              <button
-                type="button"
-                className={styles.togglePasswordBtn}
-                onClick={() => setShowPassword((prev) => !prev)}
+              <select
+                id="campusDomain"
+                className={styles.select}
+                value={selectedDomainOption}
+                onChange={(e) => setSelectedDomainOption(e.target.value)}
               >
-                {showPassword ? 'Hide' : 'Show'}
-              </button>
+                {commonDomains.map((d) => (
+                  <option key={d.domain} value={d.domain}>
+                    {d.label}
+                  </option>
+                ))}
+              </select>
             </div>
-            <input
-              id="password"
-              className={styles.input}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Create a strong password"
-              type={showPassword ? 'text' : 'password'}
-              required
-              minLength={8}
-            />
-          </div>
 
-          {message && (
-            <div className={[styles.messageBanner, tone === 'error' ? styles.errorBanner : styles.successBanner].join(' ')}>
-              {message}
+            {selectedDomainOption === 'custom' && (
+              <div className={styles.fieldGroup}>
+                <label htmlFor="customDomain" className={styles.label}>
+                  Campus Domain Name
+                </label>
+                <input
+                  id="customDomain"
+                  className={styles.input}
+                  value={customDomainName}
+                  onChange={(e) => setCustomDomainName(e.target.value)}
+                  placeholder="e.g. students.harvard.edu"
+                  type="text"
+                  required
+                />
+              </div>
+            )}
+
+            <div className={styles.fieldGroup}>
+              <label htmlFor="email" className={styles.label}>
+                University Email Address
+              </label>
+              <input
+                id="email"
+                className={styles.input}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={
+                  selectedDomainOption === 'cuchd.in'
+                    ? 'username@cuchd.in'
+                    : selectedDomainOption === 'custom'
+                    ? 'student.username'
+                    : 'username@university.edu'
+                }
+                type="email"
+                required
+              />
             </div>
-          )}
 
-          <Button
-            className={styles.submitBtn}
-            variant="primary"
-            size="large"
-            type="submit"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Creating Account...' : 'Join UniMatch'}
-          </Button>
-        </form>
+            <div className={styles.fieldGroup}>
+              <div className={styles.labelRow}>
+                <label htmlFor="password" className={styles.label}>
+                  Password <span className={styles.labelHint}>(min 8 characters)</span>
+                </label>
+                <button
+                  type="button"
+                  className={styles.togglePasswordBtn}
+                  onClick={() => setShowPassword((prev) => !prev)}
+                >
+                  {showPassword ? 'Hide password' : 'Show password'}
+                </button>
+              </div>
+              <input
+                id="password"
+                className={styles.input}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Create a secure password"
+                type={showPassword ? 'text' : 'password'}
+                required
+                minLength={8}
+              />
+            </div>
 
-        <div className={styles.footerNote}>
-          <p>
-            Already have an account?{' '}
-            <Link to="/login" className={styles.loginLink}>
-              Sign in here
-            </Link>
-          </p>
-          <div className={styles.securityHint}>
-            <ShieldCheck size={14} className={styles.securityIcon} />
-            <span>Verified campus community · Strictly zero spam</span>
+            {message && (
+              <div
+                className={[
+                  styles.messageBanner,
+                  tone === 'error' ? styles.errorBanner : styles.successBanner
+                ].join(' ')}
+              >
+                {message}
+              </div>
+            )}
+
+            <Button
+              className={styles.submitBtn}
+              variant="primary"
+              size="large"
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Creating Account...' : 'Join UniMatch'} <ArrowRight size={16} />
+            </Button>
+          </form>
+
+          <div className={styles.footerNote}>
+            <p>
+              Already registered?{' '}
+              <Link to="/login" className={styles.loginLink}>
+                Sign in to your account
+              </Link>
+            </p>
+            <div className={styles.securityHint}>
+              <ShieldCheck size={14} className={styles.securityIcon} />
+              <span>Verified student profiles · Strict anti-harassment policy</span>
+            </div>
           </div>
-        </div>
+        </main>
       </div>
     </section>
   );

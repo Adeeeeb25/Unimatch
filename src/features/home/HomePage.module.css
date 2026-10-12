@@ -1,368 +1,891 @@
-.page {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 3rem 4vw 5rem;
+/* ========================================================
+   UniMatch Landing Page — Editorial TOONHUB-Inspired Styling
+   Solid colors, bold condensed typography, layered poster art
+   ======================================================== */
+
+.landingWrapper {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 4.5rem;
+  background-color: var(--bg-warm, #FFFCF8);
+  overflow-x: hidden;
 }
 
-/* Hero Section */
-.heroSection {
+/* ========================================================
+   1. FULL-VIEWPORT HERO SECTION
+   ======================================================== */
+.heroViewport {
+  position: relative;
+  min-height: calc(100vh - 72px);
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 5vw 4rem;
+  overflow: hidden;
+  box-sizing: border-box;
+  border-bottom: 2px solid var(--text-main, #282333);
+  transition: background-color 300ms ease;
+}
+
+/* Theme Background Subtle Tints */
+.theme_lavender {
+  background-color: #F8F5FF;
+}
+
+.theme_yellow {
+  background-color: #FFFDF5;
+}
+
+.theme_coral {
+  background-color: #FFF6F2;
+}
+
+.theme_pink {
+  background-color: #FFF5F8;
+}
+
+/* ========================================================
+   2. GIANT EDITORIAL BACKGROUND TYPOGRAPHY
+   ======================================================== */
+.giantBackdropText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.giantBackdropText span {
+  font-family: var(--font-editorial, 'Anton', Impact, sans-serif);
+  font-size: clamp(5.5rem, 15vw, 14.5rem);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: rgba(40, 35, 51, 0.05);
+  display: block;
+  transform: translateY(-5%);
+}
+
+/* ========================================================
+   3. HERO GRID COMPOSITION
+   ======================================================== */
+.heroGrid {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
   display: grid;
   grid-template-columns: 1.15fr 1fr;
   align-items: center;
-  gap: 3.5rem;
+  gap: 4rem;
 }
 
-.heroContent {
+/* Left Column */
+.heroEditorialCol {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
-.campusBadge {
+.themePillRow {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  background: var(--lavender-subtle, #F0EBFF);
-  border: 1px solid rgba(168, 139, 254, 0.4);
-  border-radius: var(--radius-sm, 6px);
-  padding: 0.35rem 0.85rem;
+  gap: 0.75rem;
+}
+
+.themeIndexBadge {
+  background: var(--text-main, #282333);
+  color: #FFFFFF;
+  font-family: var(--font-editorial, 'Anton', sans-serif);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  padding: 0.35rem 0.65rem;
+  border-radius: var(--radius-xs, 4px);
+  text-transform: uppercase;
+}
+
+.themeCategoryName {
   font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
-  font-size: 0.8rem;
+  font-size: 0.88rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--deep-purple, #5B2BE0);
-  align-self: flex-start;
+  color: var(--text-secondary, #746E7D);
 }
 
-.campusDot {
+.heroHeadline {
+  font-family: var(--font-editorial, 'Anton', Impact, sans-serif);
+  font-size: clamp(2.8rem, 5vw, 4.4rem);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: var(--text-main, #282333);
+  margin: 0;
+}
+
+.heroLead {
+  font-family: var(--font-body, 'Inter', sans-serif);
+  font-size: clamp(1.05rem, 1.4vw, 1.2rem);
+  line-height: 1.6;
+  color: var(--text-secondary, #746E7D);
+  margin: 0;
+  max-width: 540px;
+}
+
+.ctaGroup {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.mainCtaBtn {
+  background-color: var(--deep-purple, #5B2BE0) !important;
+  color: #FFFFFF !important;
+  font-weight: 700;
+  padding: 0.85rem 1.65rem;
+  border-radius: var(--radius-sm, 6px);
+  border: 2px solid var(--deep-purple, #5B2BE0);
+  transition: transform 150ms ease, background-color 150ms ease;
+}
+
+.mainCtaBtn:hover {
+  background-color: var(--deep-purple-hover, #481DC3) !important;
+  transform: translateY(-2px);
+}
+
+.secondaryCtaBtn {
+  background-color: transparent !important;
+  color: var(--text-main, #282333) !important;
+  border: 2px solid var(--text-main, #282333) !important;
+  font-weight: 700;
+  padding: 0.85rem 1.4rem;
+  border-radius: var(--radius-sm, 6px);
+  transition: background-color 150ms ease, transform 150ms ease;
+}
+
+.secondaryCtaBtn:hover {
+  background-color: rgba(40, 35, 51, 0.06) !important;
+  transform: translateY(-2px);
+}
+
+.trustRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.84rem;
+  color: var(--text-muted, #8E8799);
+  margin-top: 0.25rem;
+}
+
+.trustIcon {
+  color: var(--color-success, #059669);
+  flex-shrink: 0;
+}
+
+/* ========================================================
+   CAROUSEL CONTROLS BAR
+   ======================================================== */
+.carouselControlsRow {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(40, 35, 51, 0.12);
+  flex-wrap: wrap;
+}
+
+.arrowControls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.carouselNavBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm, 6px);
+  background: #FFFFFF;
+  border: 2px solid var(--text-main, #282333);
+  color: var(--text-main, #282333);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 150ms ease, background-color 150ms ease;
+  box-shadow: 2px 2px 0px var(--text-main, #282333);
+}
+
+.carouselNavBtn:hover {
+  background: var(--text-main, #282333);
+  color: #FFFFFF;
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px var(--text-main, #282333);
+}
+
+.carouselNavBtn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px var(--text-main, #282333);
+}
+
+.themeTabsList {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.themeTabBtn {
+  background: #FFFFFF;
+  border: 1px solid rgba(40, 35, 51, 0.15);
+  border-radius: var(--radius-sm, 6px);
+  padding: 0.4rem 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-display, sans-serif);
+  font-size: 0.82rem;
+  color: var(--text-secondary, #746E7D);
+  cursor: pointer;
+  transition: border-color 150ms ease, background-color 150ms ease, color 150ms ease;
+}
+
+.themeTabBtn:hover {
+  border-color: var(--text-main, #282333);
+  color: var(--text-main, #282333);
+}
+
+.activeTabBtn {
+  background: var(--text-main, #282333);
+  border-color: var(--text-main, #282333);
+  color: #FFFFFF !important;
+  font-weight: 700;
+}
+
+.tabNum {
+  font-family: var(--font-editorial, 'Anton', sans-serif);
+  font-size: 0.85rem;
+}
+
+/* ========================================================
+   4. POSTER ART COMPOSITION (FOCAL ELEMENT)
+   ======================================================== */
+.heroFocalCol {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.posterArtCanvas {
+  position: relative;
+  width: 100%;
+  max-width: 470px;
+  min-height: 520px;
+  border-radius: var(--radius-lg, 12px);
+  border: 3px solid var(--text-main, #282333);
+  box-shadow: 8px 8px 0px var(--text-main, #282333);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  transition: background-color 300ms ease;
+}
+
+/* Graphic Watermark */
+.posterWatermark {
+  position: absolute;
+  right: -25px;
+  bottom: -25px;
+  color: rgba(40, 35, 51, 0.08);
+  pointer-events: none;
+  user-select: none;
+  transform: rotate(-10deg);
+}
+
+.posterHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.posterEyebrowBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #FFFFFF;
+  border: 2px solid var(--text-main, #282333);
+  border-radius: var(--radius-sm, 6px);
+  padding: 0.35rem 0.75rem;
+  font-family: var(--font-display, sans-serif);
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-main, #282333);
+}
+
+.posterDot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: var(--deep-purple, #5B2BE0);
 }
 
-.heroHeadline {
-  font-size: clamp(2.3rem, 4.2vw, 3.4rem);
-  font-weight: 800;
-  letter-spacing: -0.035em;
-  line-height: 1.12;
-  color: var(--text-main, #272238);
-  margin: 0;
+.posterIndexCorner {
+  font-family: var(--font-editorial, 'Anton', sans-serif);
+  font-size: 1.5rem;
+  color: var(--text-main, #282333);
+  letter-spacing: 0.04em;
 }
 
-.heroLead {
+/* Overlapping Floating Cards */
+.posterCardsStack {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.floatingPostCard {
+  background: #FFFFFF;
+  border: 2px solid var(--text-main, #282333);
+  border-radius: var(--radius-md, 8px);
+  padding: 1.15rem 1.25rem;
+  box-shadow: 4px 4px 0px var(--text-main, #282333);
+  transition: transform 200ms ease;
+}
+
+.cardStagger {
+  transform: translateX(12px);
+}
+
+.floatingCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+}
+
+.cardCourseTag {
+  font-family: var(--font-display, sans-serif);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--deep-purple, #5B2BE0);
+}
+
+.cardChip {
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: var(--lavender-subtle, #F0EBFF);
+  color: var(--deep-purple, #5B2BE0);
+  border: 1px solid var(--brand-lavender, #A88BFE);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-xs, 4px);
+}
+
+.cardHeading {
+  font-family: var(--font-display, sans-serif);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-main, #282333);
+  margin: 0 0 0.35rem;
+  line-height: 1.25;
+}
+
+.cardDetail {
+  font-size: 0.85rem;
+  color: var(--text-secondary, #746E7D);
+  margin: 0 0 0.65rem;
+  line-height: 1.4;
+}
+
+.cardMetaRow {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-main, #282333);
+}
+
+.cardMetaIcon {
+  color: var(--color-success, #059669);
+}
+
+/* Poster Bottom Tags */
+.posterTagsBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  position: relative;
+  z-index: 2;
+}
+
+.posterTagPill {
+  background: #FFFFFF;
+  border: 1px solid var(--text-main, #282333);
+  border-radius: var(--radius-xs, 4px);
+  padding: 0.25rem 0.55rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--text-main, #282333);
+}
+
+/* ========================================================
+   5. HOW IT WORKS EDITORIAL SECTION
+   ======================================================== */
+.editorialSection {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 5rem 5vw;
+  box-sizing: border-box;
+}
+
+.sectionHeadingWrap {
+  max-width: 720px;
+  margin-bottom: 3.5rem;
+}
+
+.sectionEyebrow {
+  font-family: var(--font-editorial, 'Anton', sans-serif);
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+  color: var(--deep-purple, #5B2BE0);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.sectionTitle {
+  font-family: var(--font-editorial, 'Anton', Impact, sans-serif);
+  font-size: clamp(2.2rem, 3.8vw, 3.2rem);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  color: var(--text-main, #282333);
+  margin: 0 0 1rem;
+}
+
+.sectionLead {
   font-size: 1.1rem;
-  color: var(--text-secondary, #777184);
+  color: var(--text-secondary, #746E7D);
   line-height: 1.6;
   margin: 0;
-  max-width: 540px;
 }
 
-.heroCtaGroup {
+.pillarTrioGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.pillarBlock {
+  border: 2.5px solid var(--text-main, #282333);
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: 6px 6px 0px var(--text-main, #282333);
+  padding: 2.25rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  transition: transform 200ms ease;
+}
+
+.pillarBlock:hover {
+  transform: translateY(-4px);
+  box-shadow: 8px 8px 0px var(--text-main, #282333);
+}
+
+.pillarLavender {
+  background: var(--light-lavender, #F1EAFE);
+}
+
+.pillarYellow {
+  background: var(--accent-yellow-subtle, #FFFBEB);
+}
+
+.pillarCoral {
+  background: var(--accent-coral-subtle, #FEF0EA);
+}
+
+.pillarIconBadge {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-sm, 6px);
+  background: #FFFFFF;
+  border: 2px solid var(--text-main, #282333);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-main, #282333);
+  box-shadow: 3px 3px 0px var(--text-main, #282333);
+}
+
+.pillarStep {
+  font-family: var(--font-editorial, 'Anton', sans-serif);
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary, #746E7D);
+  text-transform: uppercase;
+}
+
+.pillarBlock h3 {
+  font-family: var(--font-display, sans-serif);
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-main, #282333);
+  margin: 0;
+  line-height: 1.25;
+}
+
+.pillarBlock p {
+  font-size: 0.95rem;
+  color: var(--text-secondary, #746E7D);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.pillarFeatureList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(40, 35, 51, 0.15);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main, #282333);
+}
+
+/* ========================================================
+   6. WALKTHROUGH MOCKUP SECTION
+   ======================================================== */
+.walkthroughSection {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 5vw 5rem;
+  box-sizing: border-box;
+}
+
+.walkthroughCard {
+  background: #FFFFFF;
+  border: 3px solid var(--text-main, #282333);
+  border-radius: var(--radius-xl, 14px);
+  box-shadow: 8px 8px 0px var(--text-main, #282333);
+  padding: 3rem;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+
+.walkthroughContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.walkthroughBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: var(--lavender-subtle, #F0EBFF);
+  color: var(--deep-purple, #5B2BE0);
+  border: 1px solid var(--brand-lavender, #A88BFE);
+  border-radius: var(--radius-xs, 4px);
+  padding: 0.3rem 0.65rem;
+  font-family: var(--font-display, sans-serif);
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  align-self: flex-start;
+}
+
+.walkthroughContent h2 {
+  font-family: var(--font-editorial, 'Anton', Impact, sans-serif);
+  font-size: clamp(2rem, 3.2vw, 2.8rem);
+  font-weight: 400;
+  line-height: 1.12;
+  text-transform: uppercase;
+  color: var(--text-main, #282333);
+  margin: 0;
+}
+
+.walkthroughContent p {
+  font-size: 1.05rem;
+  color: var(--text-secondary, #746E7D);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.departmentPillsWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.deptPill {
+  background: var(--bg-warm, #FFFCF8);
+  border: 1px solid rgba(40, 35, 51, 0.2);
+  border-radius: var(--radius-sm, 6px);
+  padding: 0.35rem 0.75rem;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--text-main, #282333);
+}
+
+.walkthroughCtaRow {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
   margin-top: 0.5rem;
 }
 
-.trustMicrocopy {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: 0.84rem;
-  color: var(--text-muted, #9E98AD);
-  margin: 0;
-}
-
-.trustIcon {
-  color: var(--color-success, #10B981);
-  flex-shrink: 0;
-}
-
-/* Hero Visual: Product Mockup Card */
-.heroVisualWrap {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 1.5rem 0;
-}
-
-.productMockupCard {
-  width: 100%;
-  max-width: 420px;
-  background: var(--surface-card, #FFFFFF);
-  border-radius: var(--radius-xl, 14px);
-  border: 1px solid var(--border-subtle, #EDE8F7);
-  box-shadow: 0 12px 32px rgba(91, 43, 224, 0.08), 0 2px 6px rgba(39, 34, 56, 0.03);
+/* Mockup Window */
+.mockupContainer {
+  background: #FFFFFF;
+  border: 2px solid var(--text-main, #282333);
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: 5px 5px 0px var(--text-main, #282333);
   overflow: hidden;
 }
 
-.mockupHeader {
+.mockupHeaderRow {
+  background: var(--text-main, #282333);
+  color: #FFFFFF;
+  padding: 0.65rem 1rem;
   display: flex;
   align-items: center;
-  gap: 0.85rem;
-  padding: 0.75rem 1rem;
-  background: var(--lavender-wash, #F8F4FF);
-  border-bottom: 1px solid var(--border-subtle, #EDE8F7);
+  justify-content: space-between;
 }
 
-.mockupDots {
+.mockupWindowControls {
   display: flex;
   gap: 6px;
 }
 
-.mockupDot {
+.winDot {
   width: 9px;
   height: 9px;
   border-radius: 50%;
-  background: rgba(168, 139, 254, 0.45);
+  background: #FFFFFF;
+  opacity: 0.4;
 }
 
-.mockupTitle {
-  font-size: 0.76rem;
-  font-weight: 600;
-  color: var(--text-secondary, #777184);
+.mockupUrlLabel {
+  font-family: monospace;
+  font-size: 0.75rem;
+  opacity: 0.85;
 }
 
-.mockupBody {
+.mockupContentBody {
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.85rem;
 }
 
-.mockupSearchBar {
+.mockupSearchField {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   background: var(--bg-warm, #FFFCF8);
-  border: 1px solid var(--border-subtle, #EDE8F7);
-  border-radius: var(--radius-sm, 6px);
-  padding: 0.6rem 0.85rem;
-}
-
-.mockupSearchIcon {
-  color: var(--text-muted, #9E98AD);
-  flex-shrink: 0;
-}
-
-.mockupSearchPlaceholder {
+  border: 1px solid var(--border-subtle, #E8E2F2);
+  border-radius: var(--radius-xs, 4px);
+  padding: 0.5rem 0.75rem;
   font-size: 0.78rem;
-  color: var(--text-muted, #9E98AD);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: var(--text-muted, #8E8799);
 }
 
-.mockupFeatureRow {
+.mockupMiniCard {
   display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-}
-
-.mockupFeatureCard {
-  display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.75rem;
   padding: 0.75rem 0.85rem;
-  background: var(--lavender-wash, #F8F4FF);
-  border: 1px solid rgba(168, 139, 254, 0.2);
-  border-radius: var(--radius-md, 8px);
-}
-
-.mockupFeatureIcon {
-  width: 32px;
-  height: 32px;
+  border: 1px solid var(--border-subtle, #E8E2F2);
   border-radius: var(--radius-sm, 6px);
-  background: #FFFFFF;
+  background: var(--surface-card, #FFFFFF);
+}
+
+.miniAvatar {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-xs, 4px);
+  background: var(--light-lavender, #F1EAFE);
+  border: 1px solid var(--brand-lavender, #A88BFE);
   color: var(--deep-purple, #5B2BE0);
+  font-family: var(--font-editorial, 'Anton', sans-serif);
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.mockupFeatureTitle {
-  margin: 0;
   font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--text-main, #272238);
+  flex-shrink: 0;
 }
 
-.mockupFeatureText {
-  margin: 0.15rem 0 0;
+.miniMeta {
   font-size: 0.75rem;
-  color: var(--text-secondary, #777184);
-  line-height: 1.4;
+  color: var(--text-secondary, #746E7D);
 }
 
-/* Pillars Section */
-.pillarsSection {
-  display: flex;
-  flex-direction: column;
-  gap: 2.25rem;
+/* ========================================================
+   7. CAMPUS ADMINISTRATION BANNER
+   ======================================================== */
+.adminBannerSection {
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 5vw 5rem;
+  box-sizing: border-box;
 }
 
-.pillarsHeader {
-  max-width: 650px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-}
-
-.sectionEyebrow {
-  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--deep-purple, #5B2BE0);
-}
-
-.sectionTitle {
-  font-size: clamp(1.8rem, 3vw, 2.4rem);
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  color: var(--text-main, #272238);
-  line-height: 1.2;
-  margin: 0;
-}
-
-.sectionSubtitle {
-  font-size: 1.02rem;
-  color: var(--text-secondary, #777184);
-  line-height: 1.6;
-  margin: 0;
-}
-
-.pillarsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.75rem;
-}
-
-.pillarCard {
+.adminBannerInner {
+  background: var(--text-main, #282333);
+  color: #FFFFFF;
   border-radius: var(--radius-xl, 14px);
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-  border: 1px solid;
-  transition: transform 0.2s ease;
-}
-
-.pillarCard:hover {
-  transform: translateY(-3px);
-}
-
-.pillarLavender {
-  background: var(--lavender-subtle, #F0EBFF);
-  border-color: rgba(168, 139, 254, 0.4);
-}
-
-.pillarPink {
-  background: var(--accent-pink-subtle, #FDF2F7);
-  border-color: rgba(246, 184, 208, 0.5);
-}
-
-.pillarYellow {
-  background: var(--accent-yellow-subtle, #FFFBEB);
-  border-color: rgba(255, 228, 154, 0.5);
-}
-
-.pillarIconBadge {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--radius-md, 8px);
-  background: #FFFFFF;
-  color: var(--deep-purple, #5B2BE0);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-}
-
-.pillarCard h3 {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: var(--text-main, #272238);
-}
-
-.pillarCard p {
-  margin: 0;
-  font-size: 0.92rem;
-  line-height: 1.55;
-  color: var(--text-secondary, #777184);
-}
-
-/* Campus Admin Callout */
-.campusAdminCard {
-  background: #FFFFFF;
-  border-radius: var(--radius-xl, 14px);
-  border: 1px solid var(--border-subtle, #EDE8F7);
-  padding: 2.25rem 2.5rem;
-  box-shadow: var(--shadow-card, 0 4px 16px rgba(91, 43, 224, 0.05));
+  padding: 3rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 2rem;
+  gap: 3rem;
   flex-wrap: wrap;
+  box-shadow: 8px 8px 0px var(--brand-lavender, #A88BFE);
 }
 
-.adminCopy {
-  max-width: 620px;
+.adminTextCol {
+  max-width: 680px;
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.5rem;
 }
 
 .adminEyebrow {
-  font-family: var(--font-display, 'Plus Jakarta Sans', sans-serif);
-  font-size: 0.74rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--deep-purple, #5B2BE0);
-}
-
-.adminCopy h3 {
-  margin: 0;
-  font-size: 1.35rem;
-  font-weight: 800;
-  color: var(--text-main, #272238);
-}
-
-.adminCopy p {
-  margin: 0;
-  font-size: 0.92rem;
-  color: var(--text-secondary, #777184);
-  line-height: 1.55;
-}
-
-.adminCopy code {
-  background: var(--lavender-subtle, #F0EBFF);
-  color: var(--deep-purple, #5B2BE0);
-  padding: 0.15rem 0.4rem;
-  border-radius: 4px;
+  font-family: var(--font-editorial, 'Anton', sans-serif);
   font-size: 0.88rem;
+  letter-spacing: 0.08em;
+  color: var(--accent-yellow, #FFE49A);
 }
 
-.adminActions {
+.adminTextCol h3 {
+  font-family: var(--font-editorial, 'Anton', Impact, sans-serif);
+  font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #FFFFFF;
+  margin: 0;
+  line-height: 1.15;
+}
+
+.adminTextCol p {
+  color: #D1CCDC;
+  font-size: 0.98rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.adminTextCol code {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  color: var(--accent-yellow, #FFE49A);
+}
+
+.adminBtnCol {
   display: flex;
-  gap: 0.75rem;
+  gap: 0.85rem;
   flex-shrink: 0;
 }
 
-@media (max-width: 900px) {
-  .heroSection {
+.adminBtnCol button {
+  background: #FFFFFF !important;
+  color: var(--text-main, #282333) !important;
+  border: 2px solid #FFFFFF !important;
+  font-weight: 700;
+}
+
+.adminBtnCol button:hover {
+  background: var(--accent-yellow, #FFE49A) !important;
+  border-color: var(--accent-yellow, #FFE49A) !important;
+}
+
+/* ========================================================
+   8. RESPONSIVE BREAKPOINTS
+   ======================================================== */
+@media (max-width: 1024px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .pillarTrioGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .walkthroughCard {
     grid-template-columns: 1fr;
     gap: 2.5rem;
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .heroViewport {
+    padding: 2rem 5vw 3rem;
+    min-height: auto;
+  }
+
+  .heroHeadline {
+    font-size: 2.6rem;
+  }
+
+  .giantBackdropText span {
+    font-size: 18vw;
+  }
+
+  .posterArtCanvas {
+    min-height: auto;
+    padding: 1.25rem;
+  }
+
+  .cardStagger {
+    transform: none;
+  }
+
+  .carouselControlsRow {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .adminBannerInner {
+    padding: 2rem;
+  }
+
+  .adminBtnCol {
+    width: 100%;
+    flex-direction: column;
   }
 }

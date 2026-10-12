@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
 import BrandLogo from '../../components/BrandLogo';
 import Button from '../../components/Button';
 import styles from './LoginPage.module.css';
@@ -44,89 +44,127 @@ const LoginPage = () => {
 
   return (
     <section className={styles.page}>
-      <div className={styles.authCard}>
-        <div className={styles.logoWrap}>
-          <BrandLogo size="medium" />
-        </div>
-
-        <div className={styles.header}>
-          <h1>Welcome back!</h1>
-          <p className={styles.lead}>
-            Sign in with your university credentials to connect with classmates and discover study spots.
-          </p>
-        </div>
-
-        <form className={styles.form} onSubmit={handleSubmit}>
-          <div className={styles.fieldGroup}>
-            <label htmlFor="loginEmail" className={styles.label}>
-              University Email
-            </label>
-            <input
-              id="loginEmail"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="e.g. yourname@university.edu"
-              required
-              className={styles.input}
-              autoComplete="email"
-            />
+      <div className={styles.splitWrapper}>
+        {/* Left Side: Restrained Branded Editorial Panel */}
+        <aside className={styles.brandSidePanel}>
+          <div className={styles.brandSideTop}>
+            <BrandLogo size="medium" />
+            <span className={styles.brandSideBadge}>Student Portal</span>
           </div>
 
-          <div className={styles.fieldGroup}>
-            <div className={styles.labelRow}>
-              <label htmlFor="loginPassword" className={styles.label}>
-                Password
+          <div className={styles.brandStatementBlock}>
+            <span className={styles.brandOverline}>Campus Access</span>
+            <h2 className={styles.brandHeadline}>
+              YOUR PEOPLE ARE ON CAMPUS.
+            </h2>
+            <p className={styles.brandLead}>
+              Sign in to coordinate courses, join hackathon teams, and find quiet study spots across campus.
+            </p>
+          </div>
+
+          <div className={styles.perksList}>
+            <div className={styles.perkItem}>
+              <CheckCircle2 size={16} className={styles.perkIcon} />
+              <span>Verified university email required (.edu / .cuchd.in)</span>
+            </div>
+            <div className={styles.perkItem}>
+              <CheckCircle2 size={16} className={styles.perkIcon} />
+              <span>Course and department collaboration with classmates</span>
+            </div>
+            <div className={styles.perkItem}>
+              <CheckCircle2 size={16} className={styles.perkIcon} />
+              <span>Direct peer messaging and study spot discovery</span>
+            </div>
+          </div>
+        </aside>
+
+        {/* Right Side: Form Card */}
+        <main className={styles.authCard}>
+          <div className={styles.header}>
+            <span className={styles.formEyebrow}>WELCOME BACK</span>
+            <h1>Sign in to your account</h1>
+            <p className={styles.lead}>
+              Enter your authorized university email address to access your campus directory.
+            </p>
+          </div>
+
+          <form className={styles.form} onSubmit={handleSubmit}>
+            <div className={styles.fieldGroup}>
+              <label htmlFor="loginEmail" className={styles.label}>
+                University Email Address
               </label>
-              <button
-                type="button"
-                className={styles.togglePasswordBtn}
-                onClick={() => setShowPassword((prev) => !prev)}
+              <input
+                id="loginEmail"
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                placeholder="e.g. alex@cuchd.in or name@university.edu"
+                required
+                className={styles.input}
+                autoComplete="email"
+              />
+            </div>
+
+            <div className={styles.fieldGroup}>
+              <div className={styles.labelRow}>
+                <label htmlFor="loginPassword" className={styles.label}>
+                  Password
+                </label>
+                <button
+                  type="button"
+                  className={styles.togglePasswordBtn}
+                  onClick={() => setShowPassword((prev) => !prev)}
+                >
+                  {showPassword ? 'Hide password' : 'Show password'}
+                </button>
+              </div>
+              <input
+                id="loginPassword"
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                placeholder="Enter your account password"
+                required
+                className={styles.input}
+                autoComplete="current-password"
+              />
+            </div>
+
+            {message && (
+              <div
+                className={[
+                  styles.messageBanner,
+                  tone === 'error' ? styles.errorBanner : styles.successBanner
+                ].join(' ')}
               >
-                {showPassword ? 'Hide' : 'Show'}
-              </button>
+                {message}
+              </div>
+            )}
+
+            <Button
+              variant="primary"
+              size="large"
+              type="submit"
+              disabled={isLoading}
+              className={styles.submitBtn}
+            >
+              {isLoading ? 'Signing In...' : 'Sign In to Campus'} <ArrowRight size={16} />
+            </Button>
+          </form>
+
+          <div className={styles.footerNote}>
+            <p>
+              New to UniMatch?{' '}
+              <Link to="/signup" className={styles.signupLink}>
+                Create a student profile
+              </Link>
+            </p>
+            <div className={styles.securityHint}>
+              <ShieldCheck size={14} className={styles.securityIcon} />
+              <span>Strictly zero ads or tracking · Institutional accounts only</span>
             </div>
-            <input
-              id="loginPassword"
-              type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder="Enter your password"
-              required
-              className={styles.input}
-              autoComplete="current-password"
-            />
           </div>
-
-          {message && (
-            <div className={[styles.messageBanner, tone === 'error' ? styles.errorBanner : styles.successBanner].join(' ')}>
-              {message}
-            </div>
-          )}
-
-          <Button
-            variant="primary"
-            size="large"
-            type="submit"
-            disabled={isLoading}
-            className={styles.submitBtn}
-          >
-            {isLoading ? 'Signing In...' : 'Sign In to Campus'}
-          </Button>
-        </form>
-
-        <div className={styles.footerNote}>
-          <p>
-            New to UniMatch?{' '}
-            <Link to="/signup" className={styles.signupLink}>
-              Create your student profile
-            </Link>
-          </p>
-          <div className={styles.securityHint}>
-            <ShieldCheck size={14} className={styles.securityIcon} />
-            <span>Verified campus community · Student privacy first</span>
-          </div>
-        </div>
+        </main>
       </div>
     </section>
   );

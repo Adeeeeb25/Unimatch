@@ -24,12 +24,14 @@
 }
 
 .hero h1 {
-  font-size: clamp(2rem, 3.5vw, 2.8rem);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: var(--text-main, #272238);
+  font-family: var(--font-editorial, 'Anton', Impact, sans-serif);
+  font-size: clamp(2.2rem, 4vw, 3.2rem);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  color: var(--text-main, #282333);
   margin: 0;
-  line-height: 1.15;
+  line-height: 1.08;
 }
 
 .lead {
@@ -51,12 +53,14 @@
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
-  border: 1px solid;
-  transition: transform 0.2s ease;
+  border: 2px solid var(--text-main, #282333);
+  box-shadow: 5px 5px 0px var(--text-main, #282333);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .storyCard:hover {
-  transform: translateY(-3px);
+  transform: translateY(-4px);
+  box-shadow: 7px 7px 0px var(--text-main, #282333);
 }
 
 .cardSpark {
