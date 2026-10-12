@@ -358,8 +358,8 @@ const AdminDashboard = () => {
                   <span className={styles.badgeSuccess}>Connected</span>
                 </div>
                 <div className={styles.statusItem}>
-                  <span className={styles.statusLabel}>API Service Port</span>
-                  <span className={styles.badgeInfo}>Port 5001</span>
+                  <span className={styles.statusLabel}>API Service Status</span>
+                  <span className={styles.badgeSuccess}>Online</span>
                 </div>
                 <div className={styles.statusItem}>
                   <span className={styles.statusLabel}>Support Queue</span>

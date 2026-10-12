@@ -31,6 +31,14 @@ const supportLimiter = rateLimit({
   message: { message: 'Too many inquiries submitted. Please try again later.' }
 });
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const distPath = path.resolve(__dirname, '../../dist');
+
 // CORS — restrict to configured origin in production
 const allowedOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
@@ -40,7 +48,13 @@ app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (e.g. curl, mobile apps, server-to-server)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+    if (
+      allowedOrigins.includes('*') ||
+      allowedOrigins.includes(origin) ||
+      (process.env.NODE_ENV !== 'production' && origin.startsWith('http://localhost:'))
+    ) {
+      return callback(null, true);
+    }
     return callback(new Error(`CORS: origin ${origin} is not allowed`));
   },
   credentials: true
@@ -68,6 +82,17 @@ app.use('/api/admin', authLimiter, adminRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/support', supportLimiter, supportRoutes);
 app.use('/api/domains', domainRoutes);
+
+// Serve static frontend assets if built dist exists
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    res.sendFile(path.join(distPath, 'index.html'));
+  });
+}
 
 // Global error handler
 app.use((err, req, res, _next) => {

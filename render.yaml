@@ -1,0 +1,51 @@
+services:
+  # 1. Backend Web Service (Node.js + Express)
+  - type: web
+    name: unimatch-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: unimatch-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_JWT_SECRET
+        generateValue: true
+      - key: ADMIN_ID
+        value: admin
+      - key: ADMIN_PASSWORD_HASH
+        value: $2b$10$w6z9L8zLhG/B3Gq4rZgZ9.yK0eEw8v1oR5Z5j4f7G5Y1W5b8z9x2y
+      - key: CORS_ORIGIN
+        value: "*"
+      - key: NODE_ENV
+        value: production
+
+  # 2. Frontend Web Service (React SPA on Vite)
+  - type: web
+    name: unimatch-web
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    plan: free
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: unimatch-api
+          property: host
+
+# 3. PostgreSQL Managed Database
+databases:
+  - name: unimatch-db
+    plan: free
+    databaseName: unimatch
+    user: unimatch_user

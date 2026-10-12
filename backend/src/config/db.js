@@ -5,9 +5,18 @@ dotenv.config();
 
 const connectionString = process.env.DATABASE_URL;
 
+const isRemoteDb = Boolean(
+  connectionString &&
+  !connectionString.includes('localhost') &&
+  !connectionString.includes('127.0.0.1')
+);
+
 export const pool = new Pool(
   connectionString
-    ? { connectionString }
+    ? {
+        connectionString,
+        ssl: isRemoteDb ? { rejectUnauthorized: false } : false
+      }
     : {
         host: process.env.PGHOST || 'localhost',
         port: Number(process.env.PGPORT || 5432),

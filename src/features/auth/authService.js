@@ -1,6 +1,10 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+const RAW_API_URL = import.meta.env.VITE_API_URL !== undefined
+  ? import.meta.env.VITE_API_URL
+  : (import.meta.env.DEV ? 'http://localhost:5001' : '');
 
-const buildUrl = (path) => `${API_BASE_URL}${path}`;
+const API_BASE_URL = RAW_API_URL.replace(/\/+$/, '');
+
+const buildUrl = (path) => `${API_BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;
 
 const parseJson = async (response) => {
   const text = await response.text();
