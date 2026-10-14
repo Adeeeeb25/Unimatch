@@ -17,9 +17,9 @@ services:
       - key: ADMIN_JWT_SECRET
         generateValue: true
       - key: ADMIN_ID
-        value: admin
+        value: uni-admin
       - key: ADMIN_PASSWORD_HASH
-        value: $2b$10$w6z9L8zLhG/B3Gq4rZgZ9.yK0eEw8v1oR5Z5j4f7G5Y1W5b8z9x2y
+        value: "$2b$12$gjAZir.Yh6HeTvHucPFd3O8Y6GwAbrxBRB4SvRobbSHjUuBRGT4LG"
       - key: CORS_ORIGIN
         value: "*"
       - key: NODE_ENV
