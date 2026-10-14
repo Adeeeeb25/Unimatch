@@ -10,6 +10,17 @@ const testInbox = [];
 export const __getTestInbox = () => [...testInbox];
 export const __clearTestInbox = () => { testInbox.length = 0; };
 
+const hasSmtpConfig = () => {
+  return Boolean(
+    (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) ||
+    (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD)
+  );
+};
+
+const hasResendConfig = () => {
+  return Boolean(process.env.RESEND_API_KEY);
+};
+
 /**
  * Determine active email provider configuration
  */
@@ -17,15 +28,27 @@ export const getEmailProviderStatus = () => {
   if (process.env.NODE_ENV === 'test' || process.env.MOCK_EMAIL_DELIVERY === 'true') {
     return { configured: true, provider: 'test' };
   }
-  if (process.env.RESEND_API_KEY) {
-    return { configured: true, provider: 'resend' };
-  }
-  if (
-    (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) ||
-    (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD)
-  ) {
+
+  const explicit = process.env.EMAIL_PROVIDER?.trim().toLowerCase();
+  const hasSmtp = hasSmtpConfig();
+  const hasResend = hasResendConfig();
+
+  if (explicit === 'smtp' && hasSmtp) {
     return { configured: true, provider: 'smtp' };
   }
+  if (explicit === 'resend' && hasResend) {
+    return { configured: true, provider: 'resend' };
+  }
+
+  // If SMTP is provided, prefer SMTP because it sends to any recipient domain without DNS challenge verification
+  if (hasSmtp) {
+    return { configured: true, provider: 'smtp' };
+  }
+
+  if (hasResend) {
+    return { configured: true, provider: 'resend' };
+  }
+
   return { configured: false, provider: null };
 };
 
@@ -46,12 +69,21 @@ const getSmtpTransporter = () => {
   const secure = process.env.SMTP_SECURE === 'true' || port === 465;
 
   if (host && user && pass) {
-    smtpTransporter = nodemailer.createTransport({
-      host,
-      port,
-      secure,
-      auth: { user, pass }
-    });
+    // If using gmail host with app password, service: 'gmail' handles ports and TLS automatically
+    const isGmail = host.toLowerCase().includes('gmail');
+    smtpTransporter = nodemailer.createTransport(
+      isGmail
+        ? {
+            service: 'gmail',
+            auth: { user, pass }
+          }
+        : {
+            host,
+            port,
+            secure,
+            auth: { user, pass }
+          }
+    );
     return smtpTransporter;
   }
 
@@ -197,48 +229,68 @@ export const sendVerificationOtpEmail = async (toEmail, otp) => {
   const defaultFrom = 'UniMatch <onboarding@resend.dev>';
   const fromAddress = process.env.EMAIL_FROM || defaultFrom;
 
-  // 3. Resend Delivery Provider
-  if (status.provider === 'resend') {
+  const sendViaSmtp = async () => {
+    const transporter = getSmtpTransporter();
+    // For Gmail SMTP, from address should use the authenticated user email to avoid deliverability rejection
+    const smtpFrom = process.env.SMTP_USER
+      ? `"UniMatch Campus" <${process.env.SMTP_USER.trim()}>`
+      : fromAddress;
+
+    const info = await transporter.sendMail({
+      from: smtpFrom,
+      to: normalizedEmail,
+      subject,
+      text: textContent,
+      html: htmlContent
+    });
+
+    console.log(`[EMAIL] Verification OTP delivered to ${normalizedEmail} via SMTP. ID: ${info.messageId}`);
+    return { delivered: true, provider: 'smtp', messageId: info.messageId };
+  };
+
+  const sendViaResend = async () => {
     const resend = getResendClient();
+    const response = await resend.emails.send({
+      from: fromAddress,
+      to: normalizedEmail,
+      subject,
+      text: textContent,
+      html: htmlContent
+    });
+
+    if (response.error) {
+      console.error('[EMAIL ERROR] Resend rejected dispatch:', response.error.message);
+      throw new Error(`Email provider error: ${response.error.message}`);
+    }
+
+    console.log(`[EMAIL] Verification OTP delivered to ${normalizedEmail} via Resend. ID: ${response.data?.id}`);
+    return { delivered: true, provider: 'resend', messageId: response.data?.id };
+  };
+
+  // 3. Execution with Automatic Fallback
+  if (status.provider === 'smtp') {
     try {
-      const response = await resend.emails.send({
-        from: fromAddress,
-        to: normalizedEmail,
-        subject,
-        text: textContent,
-        html: htmlContent
-      });
-
-      if (response.error) {
-        console.error('[EMAIL ERROR] Resend rejected dispatch:', response.error.message);
-        throw new Error(`Email provider error: ${response.error.message}`);
-      }
-
-      console.log(`[EMAIL] Verification OTP delivered to ${normalizedEmail} via Resend. ID: ${response.data?.id}`);
-      return { delivered: true, provider: 'resend', messageId: response.data?.id };
+      return await sendViaSmtp();
     } catch (err) {
-      console.error('[EMAIL ERROR] Resend dispatch failed:', err.message);
-      throw new Error(`Failed to deliver verification email: ${err.message}`);
+      console.error('[EMAIL ERROR] SMTP dispatch failed:', err.message);
+      if (hasResendConfig()) {
+        console.warn('[EMAIL FALLBACK] Falling back to Resend...');
+        return await sendViaResend();
+      }
+      throw new Error(`Failed to deliver verification email via SMTP: ${err.message}`);
     }
   }
 
-  // 4. SMTP / Nodemailer Delivery Provider
-  if (status.provider === 'smtp') {
-    const transporter = getSmtpTransporter();
+  if (status.provider === 'resend') {
     try {
-      const info = await transporter.sendMail({
-        from: fromAddress,
-        to: normalizedEmail,
-        subject,
-        text: textContent,
-        html: htmlContent
-      });
-
-      console.log(`[EMAIL] Verification OTP delivered to ${normalizedEmail} via SMTP. ID: ${info.messageId}`);
-      return { delivered: true, provider: 'smtp', messageId: info.messageId };
+      return await sendViaResend();
     } catch (err) {
-      console.error('[EMAIL ERROR] SMTP dispatch failed:', err.message);
-      throw new Error(`Failed to deliver verification email via SMTP: ${err.message}`);
+      console.error('[EMAIL ERROR] Resend dispatch failed:', err.message);
+      if (hasSmtpConfig()) {
+        console.warn('[EMAIL FALLBACK] Resend failed — falling back to SMTP...');
+        return await sendViaSmtp();
+      }
+      throw new Error(`Failed to deliver verification email: ${err.message}`);
     }
   }
 
