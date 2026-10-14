@@ -39,24 +39,31 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const distPath = path.resolve(__dirname, '../../dist');
 
-// CORS — restrict to configured origin in production
+// CORS — allow configured origins, any Render / Vercel deployment, and local development
 const allowedOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
-  : ['http://localhost:5173', 'http://localhost:4173'];
+  : ['*'];
+
+const isOriginAllowed = (origin) => {
+  if (!origin) return true;
+  if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) return true;
+  if (origin.endsWith('.onrender.com') || origin.endsWith('.vercel.app')) return true;
+  if (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) return true;
+  return false;
+};
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (e.g. curl, mobile apps, server-to-server)
-    if (!origin) return callback(null, true);
-    if (
-      allowedOrigins.includes('*') ||
-      allowedOrigins.includes(origin) ||
-      (process.env.NODE_ENV !== 'production' && origin.startsWith('http://localhost:'))
-    ) {
+    if (isOriginAllowed(origin)) {
       return callback(null, true);
     }
     return callback(new Error(`CORS: origin ${origin} is not allowed`));
   },
+  credentials: true
+}));
+
+app.options('*', cors({
+  origin: (origin, callback) => callback(null, isOriginAllowed(origin)),
   credentials: true
 }));
 
