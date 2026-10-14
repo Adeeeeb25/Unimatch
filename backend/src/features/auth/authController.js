@@ -143,11 +143,8 @@ export const register = async (req, res) => {
     if (err.statusCode === 429) {
       return res.status(429).json({ message: err.message, retryAfter: err.retryAfter });
     }
-    console.error('Registration/OTP dispatch error:', err.message);
     return res.status(500).json({
-      message: err.message.includes('Email delivery service is not configured')
-        ? err.message
-        : 'Failed to dispatch verification email. Please check your address or contact support.'
+      message: err.message || 'Failed to dispatch verification email. Please check your address or contact support.'
     });
   }
 };

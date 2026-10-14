@@ -10,6 +10,8 @@ const testInbox = [];
 export const __getTestInbox = () => [...testInbox];
 export const __clearTestInbox = () => { testInbox.length = 0; };
 
+const hasBrevoConfig = () => Boolean(process.env.BREVO_API_KEY);
+
 const hasSmtpConfig = () => {
   return Boolean(
     (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) ||
@@ -30,31 +32,29 @@ export const getEmailProviderStatus = () => {
   }
 
   const explicit = process.env.EMAIL_PROVIDER?.trim().toLowerCase();
-  const hasSmtp = hasSmtpConfig();
+  const hasBrevo = hasBrevoConfig();
   const hasResend = hasResendConfig();
+  const hasSmtp = hasSmtpConfig();
 
-  if (explicit === 'smtp' && hasSmtp) {
-    return { configured: true, provider: 'smtp' };
-  }
-  if (explicit === 'resend' && hasResend) {
-    return { configured: true, provider: 'resend' };
-  }
+  if (explicit === 'brevo' && hasBrevo) return { configured: true, provider: 'brevo' };
+  if (explicit === 'resend' && hasResend) return { configured: true, provider: 'resend' };
+  if (explicit === 'smtp' && hasSmtp) return { configured: true, provider: 'smtp' };
 
-  // If SMTP is provided, prefer SMTP because it sends to any recipient domain without DNS challenge verification
-  if (hasSmtp) {
-    return { configured: true, provider: 'smtp' };
-  }
+  // Brevo uses HTTPS port 443 and sends to any recipient domain for free
+  if (hasBrevo) return { configured: true, provider: 'brevo' };
 
-  if (hasResend) {
-    return { configured: true, provider: 'resend' };
-  }
+  // Resend uses HTTPS port 443 (ideal for cloud hosts like Render)
+  if (hasResend) return { configured: true, provider: 'resend' };
+
+  // SMTP (ports 587/465, best for local testing or unblocked hosts)
+  if (hasSmtp) return { configured: true, provider: 'smtp' };
 
   return { configured: false, provider: null };
 };
 
 const getResendClient = () => {
   if (!resendClient && process.env.RESEND_API_KEY) {
-    resendClient = new Resend(process.env.RESEND_API_KEY);
+    resendClient = new Resend(process.env.RESEND_API_KEY.trim());
   }
   return resendClient;
 };
@@ -69,7 +69,6 @@ const getSmtpTransporter = () => {
   const secure = process.env.SMTP_SECURE === 'true' || port === 465;
 
   if (host && user && pass) {
-    // If using gmail host with app password, service: 'gmail' handles ports and TLS automatically
     const isGmail = host.toLowerCase().includes('gmail');
     smtpTransporter = nodemailer.createTransport(
       isGmail
@@ -197,7 +196,7 @@ const buildVerificationEmailContent = (otp) => {
 };
 
 /**
- * Send 6-digit OTP verification email via configured provider (Resend or Nodemailer/SMTP).
+ * Send 6-digit OTP verification email via configured provider (Resend, Brevo, or Nodemailer/SMTP).
  * Throws an explicit error if email provider credentials are not configured or if sending fails.
  */
 export const sendVerificationOtpEmail = async (toEmail, otp) => {
@@ -229,9 +228,64 @@ export const sendVerificationOtpEmail = async (toEmail, otp) => {
   const defaultFrom = 'UniMatch <onboarding@resend.dev>';
   const fromAddress = process.env.EMAIL_FROM || defaultFrom;
 
+  // 3. Provider: Brevo HTTP API (Port 443, sends to any recipient domain without DNS requirement)
+  const sendViaBrevo = async () => {
+    const apiKey = process.env.BREVO_API_KEY.trim();
+    const senderEmail = process.env.BREVO_SENDER_EMAIL || process.env.SMTP_USER || 'adeebainul4@gmail.com';
+    const senderName = 'UniMatch Campus';
+
+    const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'api-key': apiKey,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        sender: { name: senderName, email: senderEmail },
+        to: [{ email: normalizedEmail }],
+        subject,
+        htmlContent,
+        textContent
+      })
+    });
+
+    const data = await res.json().catch(() => null);
+    if (!res.ok) {
+      const errDetail = data?.message || `HTTP ${res.status}`;
+      throw new Error(`Brevo error: ${errDetail}`);
+    }
+
+    console.log(`[EMAIL] Verification OTP delivered to ${normalizedEmail} via Brevo. ID: ${data?.messageId}`);
+    return { delivered: true, provider: 'brevo', messageId: data?.messageId };
+  };
+
+  // 4. Provider: Resend (Port 443)
+  const sendViaResend = async () => {
+    const resend = getResendClient();
+    const response = await resend.emails.send({
+      from: fromAddress,
+      to: normalizedEmail,
+      subject,
+      text: textContent,
+      html: htmlContent
+    });
+
+    if (response.error) {
+      const msg = response.error.message || 'Unknown Resend error';
+      if (msg.includes('only send testing emails to your own email address')) {
+        throw new Error(`Resend restriction: Free sandbox can only send to your account email (${process.env.RESEND_ACCOUNT_EMAIL || 'adeebainul4@gmail.com'}). To send to @cuchd.in, verify your domain at resend.com/domains.`);
+      }
+      throw new Error(`Resend error: ${msg}`);
+    }
+
+    console.log(`[EMAIL] Verification OTP delivered to ${normalizedEmail} via Resend. ID: ${response.data?.id}`);
+    return { delivered: true, provider: 'resend', messageId: response.data?.id };
+  };
+
+  // 5. Provider: SMTP (Nodemailer, Port 587/465)
   const sendViaSmtp = async () => {
     const transporter = getSmtpTransporter();
-    // For Gmail SMTP, from address should use the authenticated user email to avoid deliverability rejection
     const smtpFrom = process.env.SMTP_USER
       ? `"UniMatch Campus" <${process.env.SMTP_USER.trim()}>`
       : fromAddress;
@@ -248,37 +302,9 @@ export const sendVerificationOtpEmail = async (toEmail, otp) => {
     return { delivered: true, provider: 'smtp', messageId: info.messageId };
   };
 
-  const sendViaResend = async () => {
-    const resend = getResendClient();
-    const response = await resend.emails.send({
-      from: fromAddress,
-      to: normalizedEmail,
-      subject,
-      text: textContent,
-      html: htmlContent
-    });
-
-    if (response.error) {
-      console.error('[EMAIL ERROR] Resend rejected dispatch:', response.error.message);
-      throw new Error(`Email provider error: ${response.error.message}`);
-    }
-
-    console.log(`[EMAIL] Verification OTP delivered to ${normalizedEmail} via Resend. ID: ${response.data?.id}`);
-    return { delivered: true, provider: 'resend', messageId: response.data?.id };
-  };
-
-  // 3. Execution with Automatic Fallback
-  if (status.provider === 'smtp') {
-    try {
-      return await sendViaSmtp();
-    } catch (err) {
-      console.error('[EMAIL ERROR] SMTP dispatch failed:', err.message);
-      if (hasResendConfig()) {
-        console.warn('[EMAIL FALLBACK] Falling back to Resend...');
-        return await sendViaResend();
-      }
-      throw new Error(`Failed to deliver verification email via SMTP: ${err.message}`);
-    }
+  // 6. Execution with Smart Fallbacks
+  if (status.provider === 'brevo') {
+    return await sendViaBrevo();
   }
 
   if (status.provider === 'resend') {
@@ -286,11 +312,36 @@ export const sendVerificationOtpEmail = async (toEmail, otp) => {
       return await sendViaResend();
     } catch (err) {
       console.error('[EMAIL ERROR] Resend dispatch failed:', err.message);
-      if (hasSmtpConfig()) {
-        console.warn('[EMAIL FALLBACK] Resend failed — falling back to SMTP...');
-        return await sendViaSmtp();
+      if (hasBrevoConfig()) {
+        console.warn('[EMAIL FALLBACK] Falling back to Brevo...');
+        return await sendViaBrevo();
       }
-      throw new Error(`Failed to deliver verification email: ${err.message}`);
+      if (hasSmtpConfig()) {
+        try {
+          console.warn('[EMAIL FALLBACK] Falling back to SMTP...');
+          return await sendViaSmtp();
+        } catch {
+          // Keep primary error message
+        }
+      }
+      throw err;
+    }
+  }
+
+  if (status.provider === 'smtp') {
+    try {
+      return await sendViaSmtp();
+    } catch (err) {
+      console.error('[EMAIL ERROR] SMTP dispatch failed:', err.message);
+      if (hasBrevoConfig()) {
+        console.warn('[EMAIL FALLBACK] Falling back to Brevo...');
+        return await sendViaBrevo();
+      }
+      if (hasResendConfig()) {
+        console.warn('[EMAIL FALLBACK] Falling back to Resend...');
+        return await sendViaResend();
+      }
+      throw new Error(`Failed to deliver verification email via SMTP: ${err.message}`);
     }
   }
 
