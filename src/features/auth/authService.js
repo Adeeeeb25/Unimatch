@@ -1,8 +1,18 @@
-const RAW_API_URL = import.meta.env.VITE_API_URL !== undefined
-  ? import.meta.env.VITE_API_URL
-  : (import.meta.env.DEV ? 'http://localhost:5001' : '');
+const getApiBaseUrl = () => {
+  const raw = import.meta.env.VITE_API_URL !== undefined
+    ? import.meta.env.VITE_API_URL
+    : (import.meta.env.DEV ? 'http://localhost:5001' : '');
 
-const API_BASE_URL = RAW_API_URL.replace(/\/+$/, '');
+  if (!raw) return '';
+  let url = raw.trim().replace(/\/+$/, '');
+  if (!url) return '';
+  if (!url.startsWith('http://') && !url.startsWith('https://') && !url.startsWith('/')) {
+    url = `https://${url}`;
+  }
+  return url;
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 const buildUrl = (path) => `${API_BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;
 
