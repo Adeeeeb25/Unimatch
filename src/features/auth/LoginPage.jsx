@@ -16,6 +16,8 @@ const LoginPage = () => {
   const [tone, setTone] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const [unverifiedEmail, setUnverifiedEmail] = useState('');
+
   const showMessage = useCallback((text, type) => {
     setMessage(text);
     setTone(type);
@@ -26,6 +28,7 @@ const LoginPage = () => {
       event.preventDefault();
       setIsLoading(true);
       setMessage('');
+      setUnverifiedEmail('');
       const normalizedEmail = email.trim().toLowerCase();
 
       try {
@@ -34,7 +37,12 @@ const LoginPage = () => {
         const destination = response.profileComplete ? '/main' : '/profile-setup';
         navigate(destination);
       } catch (error) {
-        showMessage(error.message || 'Invalid email or password', 'error');
+        if (error.code === 'EMAIL_NOT_VERIFIED') {
+          setUnverifiedEmail(normalizedEmail);
+          showMessage(error.message || 'Please verify your email address to access your account.', 'error');
+        } else {
+          showMessage(error.message || 'Invalid email or password', 'error');
+        }
       } finally {
         setIsLoading(false);
       }
@@ -137,7 +145,18 @@ const LoginPage = () => {
                   tone === 'error' ? styles.errorBanner : styles.successBanner
                 ].join(' ')}
               >
-                {message}
+                <div>{message}</div>
+                {unverifiedEmail && (
+                  <div style={{ marginTop: '0.45rem' }}>
+                    <Link
+                      to={`/signup?verifyEmail=${encodeURIComponent(unverifiedEmail)}`}
+                      className={styles.signupLink}
+                      style={{ fontWeight: 800, textDecoration: 'underline' }}
+                    >
+                      Enter verification code now &rarr;
+                    </Link>
+                  </div>
+                )}
               </div>
             )}
 

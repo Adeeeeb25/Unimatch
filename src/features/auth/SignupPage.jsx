@@ -1,14 +1,14 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { ShieldCheck, CheckCircle2, ArrowRight, ArrowLeft, Mail, RefreshCw } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { ShieldCheck, CheckCircle2, ArrowRight, ArrowLeft, Mail, RefreshCw, MailCheck } from 'lucide-react';
 import BrandLogo from '../../components/BrandLogo';
 import Button from '../../components/Button';
 import styles from './SignupPage.module.css';
-import { sendSignupOtp, signup } from './authService';
+import { register, resendVerification, verifyEmail } from './authService';
 import { setAuthToken } from './authStorage';
 
 const REDIRECT_DELAY = 1000;
-const RESEND_COOLDOWN = 60;
+const DEFAULT_RESEND_COOLDOWN = 60;
 
 const commonDomains = [
   { label: 'Chandigarh University (@cuchd.in)', domain: 'cuchd.in' },
@@ -16,10 +16,23 @@ const commonDomains = [
   { label: 'Custom Campus Domain', domain: 'custom' }
 ];
 
+const maskEmail = (emailStr) => {
+  if (!emailStr || !emailStr.includes('@')) return emailStr;
+  const [local, domain] = emailStr.split('@');
+  if (local.length <= 3) {
+    return `${local[0]}••••@${domain}`;
+  }
+  const visibleStart = local.slice(0, 2);
+  const visibleEnd = local.slice(-2);
+  return `${visibleStart}••••${visibleEnd}@${domain}`;
+};
+
 const SignupPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const timerRef = useRef(null);
   const cooldownTimerRef = useRef(null);
+  const inputRefs = useRef([]);
 
   // Form State
   const [step, setStep] = useState('details'); // 'details' | 'verify'
@@ -29,13 +42,14 @@ const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [selectedDomainOption, setSelectedDomainOption] = useState('cuchd.in');
   const [customDomainName, setCustomDomainName] = useState('');
-  const [otp, setOtp] = useState('');
+
+  // 6 Individually controlled digits
+  const [digits, setDigits] = useState(['', '', '', '', '', '']);
 
   // UI State
   const [message, setMessage] = useState('');
   const [tone, setTone] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [previewOtp, setPreviewOtp] = useState('');
   const [resendCooldown, setResendCooldown] = useState(0);
 
   const showMessage = useCallback((text, type) => {
@@ -54,9 +68,22 @@ const SignupPage = () => {
     return normalized;
   }, [customDomainName, email, selectedDomainOption]);
 
+  const otpCode = useMemo(() => digits.join(''), [digits]);
+
+  // Support prefilled verifyEmail parameter if coming from login with unverified account
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const verifyParam = params.get('verifyEmail');
+    if (verifyParam) {
+      setEmail(verifyParam);
+      setStep('verify');
+      showMessage(`Please enter the 6-digit verification code sent to ${verifyParam}`, 'info');
+    }
+  }, [location.search, showMessage]);
+
   // Start resend cooldown countdown
-  const startCooldown = useCallback(() => {
-    setResendCooldown(RESEND_COOLDOWN);
+  const startCooldown = useCallback((seconds = DEFAULT_RESEND_COOLDOWN) => {
+    setResendCooldown(seconds);
     if (cooldownTimerRef.current) clearInterval(cooldownTimerRef.current);
     cooldownTimerRef.current = setInterval(() => {
       setResendCooldown((prev) => {
@@ -69,8 +96,8 @@ const SignupPage = () => {
     }, 1000);
   }, []);
 
-  // STEP 1: Request 6-digit verification code
-  const handleRequestOtp = useCallback(
+  // STEP 1: Submit Details & Request 6-digit verification code
+  const handleRegister = useCallback(
     async (event) => {
       event.preventDefault();
       setIsLoading(true);
@@ -92,16 +119,18 @@ const SignupPage = () => {
       }
 
       try {
-        const res = await sendSignupOtp({ email: normalizedEmail });
+        const res = await register({
+          name: trimmedName,
+          email: normalizedEmail,
+          password
+        });
+
         setStep('verify');
-        setOtp('');
-        if (res.previewOtp) {
-          setPreviewOtp(res.previewOtp);
-        }
-        showMessage(res.message || 'Verification code sent to your email!', 'success');
-        startCooldown();
+        setDigits(['', '', '', '', '', '']);
+        showMessage(res.message || `Verification code sent to ${normalizedEmail}`, 'success');
+        startCooldown(res.resendCooldownSeconds || DEFAULT_RESEND_COOLDOWN);
       } catch (error) {
-        showMessage(error.message || 'Unable to send verification code. Please check your email.', 'error');
+        showMessage(error.message || 'Unable to register. Please check your details.', 'error');
       } finally {
         setIsLoading(false);
       }
@@ -109,7 +138,65 @@ const SignupPage = () => {
     [fullName, getNormalizedEmail, password, showMessage, startCooldown]
   );
 
-  // Resend code
+  // Focus the first box when transitioning to verify step
+  useEffect(() => {
+    if (step === 'verify') {
+      const focusTimer = setTimeout(() => {
+        inputRefs.current[0]?.focus();
+      }, 100);
+      return () => clearTimeout(focusTimer);
+    }
+  }, [step]);
+
+  // Handle individual digit input
+  const handleDigitChange = (index, value) => {
+    const rawChar = value.replace(/\D/g, '').slice(-1);
+    const nextDigits = [...digits];
+    nextDigits[index] = rawChar;
+    setDigits(nextDigits);
+
+    if (rawChar && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  // Handle backspace and keyboard navigation
+  const handleKeyDown = (index, e) => {
+    if (e.key === 'Backspace') {
+      if (!digits[index] && index > 0) {
+        const nextDigits = [...digits];
+        nextDigits[index - 1] = '';
+        setDigits(nextDigits);
+        inputRefs.current[index - 1]?.focus();
+      } else {
+        const nextDigits = [...digits];
+        nextDigits[index] = '';
+        setDigits(nextDigits);
+      }
+    } else if (e.key === 'ArrowLeft' && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    } else if (e.key === 'ArrowRight' && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+  };
+
+  // Support pasting full 6-digit code
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    if (!pasted) return;
+
+    const nextDigits = [...digits];
+    for (let i = 0; i < 6; i++) {
+      nextDigits[i] = pasted[i] || '';
+    }
+    setDigits(nextDigits);
+
+    const targetIndex = Math.min(pasted.length, 5);
+    inputRefs.current[targetIndex]?.focus();
+  };
+
+  // Resend verification code
   const handleResendCode = useCallback(async () => {
     if (resendCooldown > 0 || isLoading) return;
     setIsLoading(true);
@@ -117,27 +204,25 @@ const SignupPage = () => {
     const normalizedEmail = getNormalizedEmail();
 
     try {
-      const res = await sendSignupOtp({ email: normalizedEmail });
-      if (res.previewOtp) setPreviewOtp(res.previewOtp);
-      showMessage('A fresh 6-digit code has been sent to your email.', 'success');
-      startCooldown();
+      const res = await resendVerification({ email: normalizedEmail });
+      showMessage('A fresh 6-digit verification code has been dispatched to your inbox.', 'success');
+      startCooldown(res.resendCooldownSeconds || DEFAULT_RESEND_COOLDOWN);
     } catch (error) {
-      showMessage(error.message || 'Unable to resend code.', 'error');
+      showMessage(error.message || 'Unable to resend verification code.', 'error');
     } finally {
       setIsLoading(false);
     }
   }, [getNormalizedEmail, isLoading, resendCooldown, showMessage, startCooldown]);
 
-  // STEP 2: Verify 6-digit OTP and complete signup
-  const handleVerifyAndSignup = useCallback(
+  // STEP 2: Verify 6-digit OTP and activate account
+  const handleVerify = useCallback(
     async (event) => {
       event.preventDefault();
       setIsLoading(true);
       setMessage('');
 
-      const trimmedName = fullName.trim();
       const normalizedEmail = getNormalizedEmail();
-      const cleanOtp = otp.trim();
+      const cleanOtp = otpCode.trim();
 
       if (cleanOtp.length !== 6 || !/^\d{6}$/.test(cleanOtp)) {
         showMessage('Please enter the full 6-digit verification code.', 'error');
@@ -146,23 +231,25 @@ const SignupPage = () => {
       }
 
       try {
-        const response = await signup({
+        const response = await verifyEmail({
           email: normalizedEmail,
-          password,
-          name: trimmedName,
-          otp: cleanOtp
+          otp: cleanOtp,
+          name: fullName.trim(),
+          password
         });
+
         setAuthToken(response.token);
-        showMessage('Email verified! Redirecting to setup your profile...', 'success');
+        showMessage('Email verified! Redirecting to setup your student profile...', 'success');
+
         timerRef.current = window.setTimeout(() => {
           navigate(response.profileComplete ? '/main' : '/profile-setup');
         }, REDIRECT_DELAY);
       } catch (error) {
-        showMessage(error.message || 'Unable to create account. Please check the code.', 'error');
+        showMessage(error.message || 'Invalid verification code. Please check the digits.', 'error');
         setIsLoading(false);
       }
     },
-    [fullName, getNormalizedEmail, navigate, otp, password, showMessage]
+    [fullName, getNormalizedEmail, navigate, otpCode, password, showMessage]
   );
 
   useEffect(() => {
@@ -172,10 +259,12 @@ const SignupPage = () => {
     };
   }, []);
 
+  const normalizedEmailDisplay = getNormalizedEmail();
+
   return (
     <section className={styles.page}>
       <div className={styles.splitWrapper}>
-        {/* Left Side: Restrained Branded Editorial Panel */}
+        {/* Left Side: Branded Editorial Panel */}
         <aside className={styles.brandSidePanel}>
           <div className={styles.brandSideTop}>
             <BrandLogo size="medium" />
@@ -221,7 +310,7 @@ const SignupPage = () => {
                 </p>
               </div>
 
-              <form className={styles.form} onSubmit={handleRequestOtp}>
+              <form className={styles.form} onSubmit={handleRegister}>
                 <div className={styles.fieldGroup}>
                   <label htmlFor="fullname" className={styles.label}>
                     Full Name
@@ -349,12 +438,12 @@ const SignupPage = () => {
                 </p>
                 <div className={styles.securityHint}>
                   <ShieldCheck size={14} className={styles.securityIcon} />
-                  <span>A 6-digit security code will be dispatched to verify your address</span>
+                  <span>A 6-digit security code will be dispatched to your inbox</span>
                 </div>
               </div>
             </>
           ) : (
-            /* STEP 2: 6-Digit Email OTP Verification */
+            /* STEP 2: Dedicated 6-Digit Email OTP Verification Screen */
             <>
               <div className={styles.header}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
@@ -366,51 +455,51 @@ const SignupPage = () => {
                       setMessage('');
                     }}
                   >
-                    <ArrowLeft size={14} /> Edit details
+                    <ArrowLeft size={14} /> Edit registration details
                   </button>
                 </div>
                 <span className={styles.formEyebrow}>STEP 02 OF 02 · EMAIL VERIFICATION</span>
-                <h1>Verify your university email</h1>
+                <h1>Check your inbox</h1>
                 <p className={styles.lead}>
-                  We sent a 6-digit verification code to <strong>{getNormalizedEmail()}</strong>.
+                  We sent a 6-digit verification code to your university email address:
                 </p>
+                <div className={styles.maskedEmailBadge}>
+                  <MailCheck size={16} className={styles.maskedEmailIcon} />
+                  <span>{maskEmail(normalizedEmailDisplay)}</span>
+                </div>
               </div>
 
-              <form className={styles.form} onSubmit={handleVerifyAndSignup}>
+              <form className={styles.form} onSubmit={handleVerify}>
                 <div className={styles.fieldGroup}>
-                  <label htmlFor="otpInput" className={styles.label}>
-                    Enter 6-Digit Verification Code
+                  <label htmlFor="otp-digit-0" className={styles.label}>
+                    Enter 6-Digit Code
                   </label>
-                  <input
-                    id="otpInput"
-                    className={styles.otpInput}
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                    placeholder="000000"
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    maxLength={6}
-                    required
-                    autoFocus
-                  />
-                </div>
 
-                {/* Developer Preview Code Helper (for development or simulated test accounts) */}
-                {previewOtp && (
-                  <div className={styles.devHintBanner}>
-                    <span>
-                      📬 <strong>Code:</strong> <code>{previewOtp}</code>
-                    </span>
-                    <button
-                      type="button"
-                      className={styles.devFillBtn}
-                      onClick={() => setOtp(previewOtp)}
-                    >
-                      Fill Code
-                    </button>
+                  {/* 6 Individual Digit Boxes with Auto Progression & Paste Support */}
+                  <div className={styles.otpBoxRow} onPaste={handlePaste}>
+                    {digits.map((digit, idx) => (
+                      <input
+                        key={idx}
+                        id={`otp-digit-${idx}`}
+                        ref={(el) => { inputRefs.current[idx] = el; }}
+                        className={[
+                          styles.otpDigitInput,
+                          digit ? styles.otpDigitInputFilled : ''
+                        ].join(' ')}
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        maxLength={1}
+                        value={digit}
+                        onChange={(e) => handleDigitChange(idx, e.target.value)}
+                        onKeyDown={(e) => handleKeyDown(idx, e)}
+                        autoComplete={idx === 0 ? 'one-time-code' : 'off'}
+                        disabled={isLoading}
+                        aria-label={`Digit ${idx + 1}`}
+                      />
+                    ))}
                   </div>
-                )}
+                </div>
 
                 {message && (
                   <div
@@ -434,7 +523,7 @@ const SignupPage = () => {
                     {resendCooldown > 0 ? `Resend code in ${resendCooldown}s` : 'Resend verification code'}
                   </button>
                   <span style={{ fontSize: '0.78rem', color: 'var(--text-muted, #8E8799)' }}>
-                    Expires in 10 minutes
+                    ⏱ Expires in 10 minutes
                   </span>
                 </div>
 
@@ -443,15 +532,15 @@ const SignupPage = () => {
                   variant="primary"
                   size="large"
                   type="submit"
-                  disabled={isLoading || otp.length !== 6}
+                  disabled={isLoading || otpCode.length !== 6}
                 >
-                  {isLoading ? 'Verifying Code...' : 'Verify & Create Account'} <ArrowRight size={16} />
+                  {isLoading ? 'Verifying Code...' : 'Verify & Continue'} <ArrowRight size={16} />
                 </Button>
               </form>
 
               <div className={styles.footerNote}>
                 <p>
-                  Mistyped your email?{' '}
+                  Need to change your email?{' '}
                   <button
                     type="button"
                     style={{ background: 'none', border: 'none', padding: 0 }}
@@ -461,7 +550,7 @@ const SignupPage = () => {
                       setMessage('');
                     }}
                   >
-                    Change university email address
+                    Change university address
                   </button>
                 </p>
                 <div className={styles.securityHint}>

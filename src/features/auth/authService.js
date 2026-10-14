@@ -29,24 +29,38 @@ const handleResponse = async (response) => {
   const payload = await parseJson(response);
   if (!response.ok) {
     const message = payload?.message || 'Request failed';
-    throw new Error(message);
+    const error = new Error(message);
+    if (payload?.code) error.code = payload.code;
+    if (payload?.retryAfter) error.retryAfter = payload.retryAfter;
+    throw error;
   }
   return payload;
 };
 
-export const sendSignupOtp = (body) =>
-  fetch(buildUrl('/api/auth/send-otp'), {
+export const register = (body) =>
+  fetch(buildUrl('/api/auth/register'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   }).then(handleResponse);
 
-export const signup = (body) =>
-  fetch(buildUrl('/api/auth/signup'), {
+export const verifyEmail = (body) =>
+  fetch(buildUrl('/api/auth/verify-email'), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   }).then(handleResponse);
+
+export const resendVerification = (body) =>
+  fetch(buildUrl('/api/auth/resend-verification'), {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }).then(handleResponse);
+
+// Backwards compatibility aliases
+export const sendSignupOtp = register;
+export const signup = verifyEmail;
 
 export const login = (body) =>
   fetch(buildUrl('/api/auth/login'), {

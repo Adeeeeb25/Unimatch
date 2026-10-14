@@ -41,6 +41,13 @@ export const protect = async (req, res, next) => {
       return res.status(401).json({ message: 'Account not found' });
     }
 
+    if (user.isVerified === false) {
+      return res.status(403).json({
+        message: 'Email verification required. Please verify your student email address.',
+        code: 'EMAIL_NOT_VERIFIED'
+      });
+    }
+
     req.user = user;
     next();
   } catch (error) {

@@ -85,10 +85,40 @@ UniMatch's Express server is configured to serve the production Vite frontend bu
 
 ---
 
+---
+
+## Email Verification (OTP) Provider Setup
+
+UniMatch requires real email delivery for new student registrations. Students must receive and enter a 6-digit verification code before their accounts are activated.
+
+### Provider Option A: Resend (Recommended)
+1. Sign up for a free account at **[resend.com](https://resend.com)**.
+2. Go to **API Keys** and generate a new key (`re_...`).
+3. *(For production custom domains)* Go to **Domains** in Resend, add your campus domain (e.g., `unimatch.edu` or `cuchd.in`), and add the provided DNS TXT/MX records at your domain registrar.
+4. Add the following environment variables to your backend service (in Render or Railway):
+   - `RESEND_API_KEY`: `re_your_api_key_here`
+   - `EMAIL_FROM`: `UniMatch <onboarding@resend.dev>` *(for testing)* or `UniMatch <verify@your-verified-domain.com>` *(for production)*
+   - `OTP_HMAC_SECRET`: Any random 32+ character string.
+
+### Provider Option B: SMTP / Gmail (Nodemailer)
+If you prefer using SMTP or a Google Workspace/Gmail App Password:
+1. Generate an App Password in your Google Account security settings.
+2. Add the following environment variables to your backend service:
+   - `SMTP_HOST`: `smtp.gmail.com`
+   - `SMTP_PORT`: `587`
+   - `SMTP_SECURE`: `false`
+   - `SMTP_USER`: `your_email@gmail.com`
+   - `SMTP_PASS`: `your_16_character_app_password`
+   - `EMAIL_FROM`: `"UniMatch Campus" <your_email@gmail.com>`
+
+---
+
 ## Verifying the Live Deployment
 
 1. Visit your live frontend URL.
-2. Test user signup with any institutional email (e.g. `alex@cuchd.in`).
-3. Complete the onboarding wizard (profile photo, major, year, interests).
-4. Verify directory browsing, search filters, and messaging.
-5. Access `/admin/login` using the configured administrator credentials.
+2. Test user signup with an authorized institutional email (e.g. `alex@cuchd.in`).
+3. Check your actual inbox for the email titled **"Verify your UniMatch email"** containing the 6-digit code.
+4. Enter the 6-digit code on the verification screen to activate your account.
+5. Complete the onboarding wizard (profile photo, major, year, interests).
+6. Verify directory browsing, search filters, and messaging.
+7. Access `/admin/login` using the configured administrator credentials (`uni-admin` / `AdminPass123!`).

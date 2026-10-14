@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS ${USERS_TABLE} (
   email TEXT NOT NULL UNIQUE,
   password TEXT NOT NULL,
   role TEXT NOT NULL DEFAULT 'user',
+  is_verified BOOLEAN NOT NULL DEFAULT FALSE,
   profile_complete BOOLEAN NOT NULL DEFAULT FALSE,
   profile JSONB NOT NULL DEFAULT '{}'::jsonb,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -95,10 +96,35 @@ CREATE TABLE IF NOT EXISTS ${OTP_TABLE} (
   otp_hash TEXT NOT NULL,
   expires_at TIMESTAMPTZ NOT NULL,
   attempts INT NOT NULL DEFAULT 0,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  resend_count INT NOT NULL DEFAULT 0,
+  last_resend_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 CREATE INDEX IF NOT EXISTS idx_unimatch_otps_email ON ${OTP_TABLE}(email);
 `;
+
+const runMigrations = async () => {
+  // Add is_verified to users table if not exists (existing accounts remain verified)
+  await pool.query(`
+    ALTER TABLE ${USERS_TABLE}
+    ADD COLUMN IF NOT EXISTS is_verified BOOLEAN NOT NULL DEFAULT FALSE;
+  `);
+
+  // Add resend_count, last_resend_at, updated_at to otps table if not exists
+  await pool.query(`
+    ALTER TABLE ${OTP_TABLE}
+    ADD COLUMN IF NOT EXISTS resend_count INT NOT NULL DEFAULT 0;
+  `);
+  await pool.query(`
+    ALTER TABLE ${OTP_TABLE}
+    ADD COLUMN IF NOT EXISTS last_resend_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
+  `);
+  await pool.query(`
+    ALTER TABLE ${OTP_TABLE}
+    ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
+  `);
+};
 
 const connectDB = async (retries = 5, delay = 3000) => {
   for (let attempt = 1; attempt <= retries; attempt++) {
@@ -109,6 +135,7 @@ const connectDB = async (retries = 5, delay = 3000) => {
       await pool.query(createSupportTable);
       await pool.query(createDomainsTable);
       await pool.query(createOtpTable);
+      await runMigrations();
       console.log('PostgreSQL connected and schema ready');
       return true;
     } catch (error) {

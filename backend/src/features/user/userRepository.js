@@ -6,6 +6,7 @@ const mapUser = (row) => ({
   name: row.name,
   email: row.email,
   role: row.role,
+  isVerified: Boolean(row.is_verified),
   profileComplete: row.profile_complete,
   profile: row.profile || {},
   createdAt: row.created_at,
@@ -15,11 +16,11 @@ const mapUser = (row) => ({
 const buildSelect = (includePassword = false) =>
   includePassword
     ? `
-      SELECT id, name, email, password, role, profile_complete, profile, created_at, updated_at
+      SELECT id, name, email, password, role, is_verified, profile_complete, profile, created_at, updated_at
       FROM ${USERS_TABLE}
     `
     : `
-      SELECT id, name, email, role, profile_complete, profile, created_at, updated_at
+      SELECT id, name, email, role, is_verified, profile_complete, profile, created_at, updated_at
       FROM ${USERS_TABLE}
     `;
 
@@ -51,17 +52,56 @@ export const findUserById = async (id, includePassword = false) => {
   return user;
 };
 
-export const createUser = async ({ email, password, name, profile = {} }) => {
+export const createUser = async ({ email, password, name, profile = {}, isVerified = false }) => {
   const result = await pool.query(
     `
-      INSERT INTO ${USERS_TABLE} (email, password, name, profile)
-      VALUES ($1, $2, $3, $4::jsonb)
-      RETURNING id, name, email, role, profile_complete, profile, created_at, updated_at
+      INSERT INTO ${USERS_TABLE} (email, password, name, profile, is_verified)
+      VALUES ($1, $2, $3, $4::jsonb, $5)
+      RETURNING id, name, email, role, is_verified, profile_complete, profile, created_at, updated_at
     `,
-    [email, password, name, JSON.stringify(profile)]
+    [email, password, name, JSON.stringify(profile), isVerified]
   );
 
   return mapUser(result.rows[0]);
+};
+
+export const updateUnverifiedUser = async (email, { name, password }) => {
+  const result = await pool.query(
+    `
+      UPDATE ${USERS_TABLE}
+      SET name = $2, password = $3, updated_at = NOW()
+      WHERE email = $1 AND is_verified = FALSE
+      RETURNING id, name, email, role, is_verified, profile_complete, profile, created_at, updated_at
+    `,
+    [email, name, password]
+  );
+  return result.rows[0] ? mapUser(result.rows[0]) : null;
+};
+
+export const markUserVerified = async (id) => {
+  const result = await pool.query(
+    `
+      UPDATE ${USERS_TABLE}
+      SET is_verified = TRUE, updated_at = NOW()
+      WHERE id = $1
+      RETURNING id, name, email, role, is_verified, profile_complete, profile, created_at, updated_at
+    `,
+    [id]
+  );
+  return result.rows[0] ? mapUser(result.rows[0]) : null;
+};
+
+export const markUserVerifiedByEmail = async (email) => {
+  const result = await pool.query(
+    `
+      UPDATE ${USERS_TABLE}
+      SET is_verified = TRUE, updated_at = NOW()
+      WHERE email = $1
+      RETURNING id, name, email, role, is_verified, profile_complete, profile, created_at, updated_at
+    `,
+    [email]
+  );
+  return result.rows[0] ? mapUser(result.rows[0]) : null;
 };
 
 export const updateUserProfile = async (id, profile) => {
