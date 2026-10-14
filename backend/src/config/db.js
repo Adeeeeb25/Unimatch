@@ -100,18 +100,27 @@ CREATE TABLE IF NOT EXISTS ${OTP_TABLE} (
 CREATE INDEX IF NOT EXISTS idx_unimatch_otps_email ON ${OTP_TABLE}(email);
 `;
 
-const connectDB = async () => {
-  try {
-    await pool.query('SELECT 1');
-    await pool.query(createUsersTable);
-    await pool.query(createMessagesTable);
-    await pool.query(createSupportTable);
-    await pool.query(createDomainsTable);
-    await pool.query(createOtpTable);
-    console.log('PostgreSQL connected and schema ready');
-  } catch (error) {
-    console.error('PostgreSQL connection failed:', error.message);
-    process.exit(1);
+const connectDB = async (retries = 5, delay = 3000) => {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      await pool.query('SELECT 1');
+      await pool.query(createUsersTable);
+      await pool.query(createMessagesTable);
+      await pool.query(createSupportTable);
+      await pool.query(createDomainsTable);
+      await pool.query(createOtpTable);
+      console.log('PostgreSQL connected and schema ready');
+      return true;
+    } catch (error) {
+      console.error(`PostgreSQL connection attempt ${attempt}/${retries} failed:`, error.message);
+      if (attempt < retries) {
+        console.log(`Retrying in ${delay / 1000}s...`);
+        await new Promise((res) => setTimeout(res, delay));
+      } else {
+        console.error('Exhausted PostgreSQL connection retries. Server running in degraded mode.');
+        return false;
+      }
+    }
   }
 };
 
