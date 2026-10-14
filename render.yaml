@@ -31,7 +31,6 @@ services:
     runtime: static
     buildCommand: npm install && npm run build
     staticPublishPath: dist
-    plan: free
     routes:
       - type: rewrite
         source: /*
@@ -49,3 +48,4 @@ databases:
     plan: free
     databaseName: unimatch
     user: unimatch_user
+    postgresMajorVersion: "16"
