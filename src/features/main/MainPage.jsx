@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, Heart, GraduationCap, Sparkles, MapPin, MessageSquare, Search, Coffee, X } from 'lucide-react';
+import { Users, Heart, GraduationCap, Sparkles, MessageSquare, Search, X } from 'lucide-react';
 import Button from '../../components/Button';
 import StudentProfileCard from '../../components/StudentProfileCard';
 import { getAuthToken, clearAuthToken } from '../auth/authStorage';
@@ -141,14 +141,7 @@ const MainPage = () => {
 
           <div className={styles.bannerActions}>
             <Button
-              variant="lavender"
-              size="medium"
-              onClick={() => navigate('/cafe')}
-            >
-              <MapPin size={16} /> Study Spots
-            </Button>
-            <Button
-              variant="ghost"
+              variant="primary"
               size="medium"
               onClick={() => navigate('/matches')}
             >
@@ -300,28 +293,6 @@ const MainPage = () => {
         )}
       </section>
 
-      {/* Study Break / Cafe Spotlight Banner */}
-      <section className={styles.spotlightBanner}>
-        <div className={styles.spotlightVisual}>
-          <Coffee size={28} className={styles.spotlightIcon} />
-        </div>
-        <div className={styles.spotlightContent}>
-          <span className={styles.spotlightEyebrow}>Campus Study Spot Finder</span>
-          <h3>Looking for a table to study or review notes together?</h3>
-          <p>
-            Explore campus libraries, silent study zones, and student perimeter cafes with Wi-Fi details and power outlet availability.
-          </p>
-        </div>
-        <div className={styles.spotlightAction}>
-          <Button
-            variant="primary"
-            size="medium"
-            onClick={() => navigate('/cafe')}
-          >
-            Explore Spaces
-          </Button>
-        </div>
-      </section>
     </div>
   );
 };

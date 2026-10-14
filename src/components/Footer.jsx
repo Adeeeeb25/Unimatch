@@ -17,7 +17,6 @@ const Footer = () => (
           <span className={styles.columnTitle}>Community</span>
           <Link to="/main">Student Discovery</Link>
           <Link to="/matches">Direct Messages</Link>
-          <Link to="/cafe">Campus Study Spots</Link>
         </div>
         <div className={styles.column}>
           <span className={styles.columnTitle}>Campus & Support</span>

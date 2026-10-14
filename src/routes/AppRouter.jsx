@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import MatchesPage from '../features/matches/MatchesPage';
-import CafePage from '../features/cafe/CafePage';
 import SupportPage from '../features/support/SupportPage';
 import HomePage from '../features/home/HomePage';
 import MainPage from '../features/main/MainPage';
@@ -86,13 +85,7 @@ const AppRouter = () => {
         />
         <Route
           path="/cafe"
-          element={
-            authenticated ? (
-              <StudentLayout><CafePage /></StudentLayout>
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
+          element={<Navigate to="/main" replace />}
         />
         <Route
           path="/support"

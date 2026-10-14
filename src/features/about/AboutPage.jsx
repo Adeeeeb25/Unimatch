@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { Users, Sparkles, ShieldCheck, MapPin, ArrowRight } from 'lucide-react';
+import { Users, Sparkles, ShieldCheck, Compass, ArrowRight } from 'lucide-react';
 import Button from '../../components/Button';
 import styles from './AboutPage.module.css';
 
@@ -53,12 +53,12 @@ const AboutPage = () => {
 
         <article className={[styles.storyCard, styles.cardMint].join(' ')}>
           <div className={styles.cardSpark}>
-            <MapPin size={24} />
+            <Compass size={24} />
           </div>
-          <h2>Real Spaces & Real Connections</h2>
+          <h2>Collaborative Campus Culture</h2>
           <p>
-            We don&rsquo;t want you staring at a screen all day. From quiet library carrels to student union cafes,
-            our study space locator helps you turn online connections into in-person study sessions.
+            We don&rsquo;t want you feeling isolated in massive lecture halls. From project partners to exam review
+            buddies, UniMatch helps you build supportive peer networks that last through graduation.
           </p>
         </article>
       </section>
@@ -72,8 +72,8 @@ const AboutPage = () => {
           <Button variant="primary" size="large" onClick={() => navigate('/signup')}>
             Join Your Campus <ArrowRight size={16} />
           </Button>
-          <Button variant="ghost" size="large" onClick={() => navigate('/cafe')}>
-            Explore Study Spots
+          <Button variant="ghost" size="large" onClick={() => navigate('/login')}>
+            Sign In
           </Button>
         </div>
       </section>

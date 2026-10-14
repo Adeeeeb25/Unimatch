@@ -66,7 +66,7 @@ const LoginPage = () => {
               YOUR PEOPLE ARE ON CAMPUS.
             </h2>
             <p className={styles.brandLead}>
-              Sign in to coordinate courses, join hackathon teams, and find quiet study spots across campus.
+              Sign in to coordinate courses, join hackathon teams, and connect with classmates across campus.
             </p>
           </div>
 
@@ -81,7 +81,7 @@ const LoginPage = () => {
             </div>
             <div className={styles.perkItem}>
               <CheckCircle2 size={16} className={styles.perkIcon} />
-              <span>Direct peer messaging and study spot discovery</span>
+              <span>Direct 1-on-1 peer messaging and student network</span>
             </div>
           </div>
         </aside>

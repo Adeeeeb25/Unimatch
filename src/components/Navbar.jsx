@@ -52,13 +52,11 @@ const Navbar = () => {
     ? [
         { label: 'Discover', to: '/main' },
         { label: 'Messages', to: '/matches' },
-        { label: 'Study Spots', to: '/cafe' },
         { label: 'Support', to: '/support' }
       ]
     : [
         { label: 'Explore', to: '/' },
         { label: 'About', to: '/about' },
-        { label: 'Study Spaces', to: '/cafe' },
         { label: 'Campus Support', to: '/support' }
       ];
 

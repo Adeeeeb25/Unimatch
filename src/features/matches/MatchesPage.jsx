@@ -382,7 +382,7 @@ const MatchesPage = () => {
                     </div>
                     <h4>Say hello to {selectedPeer.name}!</h4>
                     <p>
-                      Send a message to break the ice, ask about assignments, or grab coffee at a campus study spot.
+                      Send a message to break the ice, ask about assignments, or plan a study session together.
                     </p>
                   </div>
                 ) : (

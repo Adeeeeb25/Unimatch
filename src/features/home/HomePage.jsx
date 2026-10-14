@@ -7,11 +7,9 @@ import {
   BookOpen,
   Code2,
   Palette,
-  Coffee,
   CheckCircle2,
   Search,
   Sparkles,
-  MapPin,
   ExternalLink
 } from 'lucide-react';
 import Button from '../../components/Button';
@@ -116,36 +114,36 @@ const HERO_THEMES = [
     tags: ['Editorial Design', '35mm Film', 'Audio Production', 'Journalism']
   },
   {
-    id: 'hangouts',
+    id: 'community',
     index: '04',
-    category: 'Study Spots & Coffee',
+    category: 'Campus Community',
     giantWord: 'CAMPUS LIFE',
     colorKey: 'pink',
     bgColor: '#F6B8D0',
     bgLight: '#FDF2F7',
     textColor: '#282333',
-    headline: 'Never eat lunch or study alone again.',
-    lead: 'Discover student-friendly campus cafes, fast Wi-Fi corners, and classmates ready to grab a quick coffee between lectures.',
-    primaryCta: 'Find nearby study spots',
-    ctaLink: '/cafe',
-    badge: 'Campus Spaces',
+    headline: 'Never navigate university life alone.',
+    lead: 'Connect with fellow students between lectures, form lunch groups, and build genuine friendships that make campus feel like home.',
+    primaryCta: 'Join your campus directory',
+    ctaLink: '/signup',
+    badge: 'Student Community',
     cards: [
       {
-        tag: 'Block 3 Lounge',
-        title: 'Corner Espresso Study Bar',
-        detail: 'Fast Wi-Fi 6, quiet ambient sound & plenty of outlets',
-        meta: 'Open daily until 9:00 PM',
-        chip: 'Power Sockets'
+        tag: 'Campus Quad & Lounge',
+        title: 'Midday Catch-Up & Lunch Circle',
+        detail: 'Casual campus meetups between morning lectures & labs',
+        meta: 'Student Union Plaza · Weekdays',
+        chip: 'Open Community'
       },
       {
-        tag: 'Science Quad Court',
-        title: 'Law & Tech Reading Garden',
-        detail: 'Outdoor shaded benches, natural sunlight & fresh air',
-        meta: 'Open Campus Zone',
-        chip: 'Outdoor Seating'
+        tag: 'Peer Mentorship',
+        title: 'First-Year Transition & Advice',
+        detail: 'Tips on course planning, campus navigation & student clubs',
+        meta: 'Campus Central · Weekly',
+        chip: 'Peer Support'
       }
     ],
-    tags: ['Coffee', 'Fast Wi-Fi', 'Power Outlets', 'Quiet Tables']
+    tags: ['Campus Socials', 'Peer Advice', 'Lunch Meetups', 'Student Clubs']
   }
 ];
 
@@ -402,16 +400,16 @@ const HomePage = () => {
 
           <article className={[styles.pillarBlock, styles.pillarCoral].join(' ')}>
             <div className={styles.pillarIconBadge}>
-              <Coffee size={24} />
+              <ShieldCheck size={24} />
             </div>
-            <span className={styles.pillarStep}>03 / CAMPUS UTILITY</span>
-            <h3>Study Spots & Verified Access</h3>
+            <span className={styles.pillarStep}>03 / TRUST & SAFETY</span>
+            <h3>Verified Campus Exclusivity</h3>
             <p>
-              Discover campus libraries, quiet Wi-Fi study zones, and student perimeter cafes. Every account is authenticated via your institutional domain.
+              Connect with real peers without spam or outside bots. Every account is authenticated via your university email address.
             </p>
             <div className={styles.pillarFeatureList}>
               <span>· Institutional email verification</span>
-              <span>· Quiet zone locator</span>
+              <span>· Campus-only discovery directory</span>
               <span>· Zero third-party ads or tracking</span>
             </div>
           </article>
